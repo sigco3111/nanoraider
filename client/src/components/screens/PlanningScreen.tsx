@@ -4,7 +4,7 @@ import { TOWNSPEOPLE } from "../../data/townspeople";
 import { RARITY_LABELS } from "../../data/rarity";
 import type { ActivityDefinition, GearSlot, MaterialId, RecipeId, RiskBand, VendorId } from "../../data/types";
 import { useGameStore } from "../../store/gameStore";
-import { buildRiskHints, computeActivityRisk, isActivityUnlocked } from "../../game/activityResolver";
+import { buildActivityBlockedReasons, buildRiskHints, computeActivityRisk, isActivityUnlocked } from "../../game/activityResolver";
 import { getTopTownspersonRecommendations } from "../../game/townspersonChecker";
 import { isLethalActivity } from "../../game/activityMeta";
 import { HeroStatus } from "../HeroStatus";
@@ -113,6 +113,7 @@ function ActivityCard({
   def,
   canUse,
   blockedReasons,
+  planLabel,
   effectiveDeathRisk,
   riskBand,
   riskHints,
@@ -121,6 +122,7 @@ function ActivityCard({
   def: ActivityDefinition;
   canUse: boolean;
   blockedReasons: string[];
+  planLabel: string;
   effectiveDeathRisk: number;
   riskBand: RiskBand;
   riskHints: string[];
@@ -173,7 +175,7 @@ function ActivityCard({
           disabled={!canUse}
           onClick={onExecute}
         >
-          + Plan
+          {planLabel}
         </button>
       </div>
     </div>
@@ -190,10 +192,8 @@ export function PlanningScreen() {
     unplanActivity,
     clearPlan,
     endDay,
-    getActivityUnlockGaps,
     goTo,
     renameHero,
-    changeHeroClass,
     directEnergySpentToday,
     getVendorOffers,
     buyVendorOffer,
@@ -298,7 +298,6 @@ export function PlanningScreen() {
         energyUsedToday={totalEnergyUsed}
         hero={hero}
         maxEnergy={meta.maxEnergy}
-        onChangeClass={changeHeroClass}
         onRename={renameHero}
       />
 
@@ -492,18 +491,42 @@ export function PlanningScreen() {
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {availableActivities.map((def) => {
             const previewRisk = computeActivityRisk(hero, def.id, meta);
+            const completedCount = hero.completedActivitiesToday.filter((id) => id === def.id).length;
+            const plannedCount = plannedActivities.filter((id) => id === def.id).length;
+            const totalCount = completedCount + plannedCount;
+            const hasDailyCap = typeof def.maxDailyUses === "number";
+            const maxDailyUses = def.maxDailyUses ?? Number.POSITIVE_INFINITY;
+            const withinDailyLimit = totalCount < maxDailyUses;
+            const dailyLimitLabel = hasDailyCap && totalCount > 0 && def.maxDailyUses !== undefined
+              ? `${Math.min(totalCount, maxDailyUses)}/${def.maxDailyUses}`
+              : hasDailyCap
+                ? "Plan"
+                : "+ Plan";
+
+            const canUse =
+              energyRemaining >= def.energyCost
+              && goldRemaining >= (def.goldCost ?? 0)
+              && isActivityUnlocked(hero, def, meta)
+              && withinDailyLimit;
+
+            const blockedReasons = buildActivityBlockedReasons(
+              hero,
+              def,
+              meta,
+              energyRemaining,
+              goldRemaining,
+              totalCount,
+            );
+
             return (
               <ActivityCard
-                blockedReasons={[
-                  ...(energyRemaining < def.energyCost ? [`energy ${energyRemaining}/${def.energyCost}`] : []),
-                  ...(goldRemaining < (def.goldCost ?? 0) ? [`gold ${goldRemaining}/${def.goldCost ?? 0}`] : []),
-                  ...getActivityUnlockGaps(def.id),
-                ]}
-                canUse={energyRemaining >= def.energyCost && goldRemaining >= (def.goldCost ?? 0) && isActivityUnlocked(hero, def, meta)}
+                blockedReasons={blockedReasons}
+                canUse={canUse}
                 def={def}
                 effectiveDeathRisk={previewRisk.finalRisk}
                 key={def.id}
                 onExecute={() => { planActivity(def.id); }}
+                planLabel={dailyLimitLabel}
                 riskBand={previewRisk.riskBand}
                 riskHints={buildRiskHints(def, previewRisk)}
               />

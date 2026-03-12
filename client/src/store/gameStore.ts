@@ -332,6 +332,14 @@ export const useGameStore = create<GameState>()(
         if (!isActivityUnlocked(hero, def, meta)) {
           return;
         }
+        // Enforce optional per-activity daily caps, counting both completed and planned instances.
+        if (def.maxDailyUses !== undefined) {
+          const completedCount = hero.completedActivitiesToday.filter((id) => id === activityId).length;
+          const plannedCount = plannedActivities.filter((id) => id === activityId).length;
+          if (completedCount + plannedCount >= def.maxDailyUses) {
+            return;
+          }
+        }
         const plannedEnergy = plannedActivities.reduce((sum, id) => sum + ACTIVITIES[id].energyCost, 0);
         if (plannedEnergy + directEnergySpentToday + def.energyCost > meta.maxEnergy) {
           return;

@@ -149,3 +149,54 @@ The outpost collection screen groups residents by raid gate. Each card shows:
 ## Key Takeaway
 
 When "Mira the Relentless" (Lv 9, War 58%, Daring 41) dies after clearing Dungeon Blackrock on Day 11, she doesn't vanish — she walks to your outpost and becomes the Battlemaster. Her name is on the board. Her stats are on the card. Future heroes are stronger because of what she did. The graveyard is the default; the outpost is the exception. Build it one legend at a time.
+
+# Brainstorm by me the human about the actual content
+
+## TOWNSPEOPLE
+
+FOR MOLTEN FURY
+
+- Tank leader: high daring, renown, #dungeons completed, stamina
+- Healer leader: high renown, #dungeons completed, spirit
+- DPS leader: high renown, #dungeons completed, power
+- Raid leader: high daring, renown, #dungeons completed
+
+- Alchemist:
+- Enchanter:
+
+- Anvil
+- Armorcrafter
+- Weaponsmith
+
+## INVENTORY
+
+- Consumables
+- Paper doll for gear
+- Crafting materials
+- Attunement items
+
+## ACTIVITIES
+
+Brainstorm of any MMO activities I can think of
+
+- Quest: +gold +xp
+- Farm gold: +gold
+- Grind mobs: +xp
+- Dungeon
+- Raid
+- Level profession
+- Craft gear
+- Farm resource: +profession +gold
+- Study bosses
+- Practice rotation
+- Theorycraft
+- Scam
+- RMT
+- Enhance gear
+- AH flip/Trading: +renown +/-gold
+- PVP
+- Guild management
+- Banter in global chat: +renown
+
+- Kill rare
+- 

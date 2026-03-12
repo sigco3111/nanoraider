@@ -81,6 +81,12 @@ export interface ActivityDefinition {
   name: string;
   description: string;
   energyCost: number;
+  /**
+   * Optional per-activity cap on how many times it can be used in a single in-game day.
+   * Counts both already-resolved and currently planned instances.
+   * If omitted, the activity has no explicit daily cap beyond the global energy limit.
+   */
+  maxDailyUses?: number;
   goldCost?: number;
   durationHours: number;
   progressionTier: ActivityProgressionTier;

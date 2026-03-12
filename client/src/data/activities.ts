@@ -319,6 +319,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
     name: "Raid: Molten Fury",
     // Level 12 — accessible around day 5-7 with dungeon grinding
     description: "Attempt the Molten Fury raid boss. Required for the Raid Legend legacy path.",
+    // Raid boss attempts are hard-capped per in-game day regardless of remaining energy.
+    maxDailyUses: 1,
     energyCost: 30,
     goldCost: 40,
     durationHours: 6,
@@ -365,6 +367,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
     id: "raid_eternal_throne",
     name: "Capstone Raid: Eternal Throne",
     description: "Final exam encounter. Built for full purple gear and max preparation.",
+    // Final capstone raid is also limited to a single attempt per in-game day.
+    maxDailyUses: 1,
     energyCost: 35,
     goldCost: 60,
     durationHours: 6,

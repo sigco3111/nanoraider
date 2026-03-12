@@ -2,17 +2,17 @@
 
 ## Core Fantasy
 
-**"Discover what your hero becomes. Every playstyle unlocks a new legacy path. Collect them all."**
+**"Discover what your hero becomes. Every playstyle unlocks a new town member. Collect them all."**
 
-You raise heroes in a simulated MMO world, but here's the twist: **your choices shape their legacy path**. Farm dungeons obsessively? Your hero becomes a combat-focused Dungeon Delver. Chase gold and flip items? They become a shrewd Merchant Lord. Mix crafting with raid prep? Unlock the rare Artisan Raider.
+You raise heroes in a simulated MMO world, but here's the twist: **your choices shape their town member**. Farm dungeons obsessively? Your hero becomes a combat-focused Dungeon Delver. Chase gold and flip items? They become a shrewd Merchant Lord. Mix crafting with raid prep? Unlock the rare Artisan Raider.
 
-Each legacy path you discover is permanently recorded in your collection—**30+ unique hero types to find, Pokédex-style**. Ultimate paths require prerequisites: you can't unlock the legendary Master Raider until you've discovered the Master Crafter path and earned their blueprint knowledge.
+Each town member you discover is permanently recorded in your collection—**30+ unique hero types to find, Pokédex-style**. Ultimate paths require prerequisites: you can't unlock the legendary Master Raider until you've discovered the Master Crafter path and earned their blueprint knowledge.
 
-When a hero dies, their legacy path unlocks become tools and knowledge for future heroes. You're not just raising one character—you're building a legacy of discoveries that compound across runs.
+When a hero dies, their town member unlocks become tools and knowledge for future heroes. You're not just raising one character—you're building a legacy of discoveries that compound across runs.
 
 ## The Hook
 
-- **Pokédex-style legacy path collection** - 30+ unique hero types to discover, each with distinct abilities and playstyles
+- **Pokédex-style town member collection** - 30+ unique hero types to discover, each with distinct abilities and playstyles
 - **Your playstyle = your path** - Farm dungeons → combat specialist, flip items → merchant, craft gear → artisan (not predetermined classes)
 - **Path prerequisites create depth** - Ultimate paths require specific prior discoveries (e.g., Ultimate Raider needs Master Crafter blueprints)
 - **Roguelike meta-progression** - Each hero benefits from previous heroes' discoveries, creating compounding strategies
@@ -20,17 +20,17 @@ When a hero dies, their legacy path unlocks become tools and knowledge for futur
 ## Design Pillars
 
 ### 1. Discovery Over Optimization
-The core loop is discovering new legacy paths, not min-maxing one build. "What happens if I focus purely on crafting this run?" unlocks new hero types and abilities. Collection drives engagement—filling out your legacy codex is the meta-goal.
+The core loop is discovering new town members, not min-maxing one build. "What happens if I focus purely on crafting this run?" unlocks new hero types and abilities. Collection drives engagement—filling out your legacy codex is the meta-goal.
 
 **Anti-pattern:** Generic idle game where optimization is the only goal, or games where content is gated behind timers rather than discovery
 
 ### 2. Personality Emerges From Playstyle
-Heroes become what you make them. Your decisions (dungeon spam, gold farming, social activities, crafting focus) organically shape their legacy path. The game reads your playstyle and reflects it in your hero's legend, creating emergent narratives.
+Heroes become what you make them. Your decisions (dungeon spam, gold farming, social activities, crafting focus) organically shape their town member. The game reads your playstyle and reflects it in your hero's legend, creating emergent narratives.
 
 **Anti-pattern:** Rigid class systems where choices don't matter, or games where "personality" is just flavor text
 
 ### 3. Knowledge Transfer Creates Progression
-Each legacy path you unlock becomes a tool for future heroes. Discovered the Master Crafter? Now all heroes can use their blueprints. Found the Lore Keeper? Future heroes start with boss knowledge. Your collection compounds into power, creating a satisfying progression tree.
+Each town member you unlock becomes a tool for future heroes. Discovered the Master Crafter? Now all heroes can use their blueprints. Found the Lore Keeper? Future heroes start with boss knowledge. Your collection compounds into power, creating a satisfying progression tree.
 
 **Anti-pattern:** Runs that feel isolated with no meaningful meta-progression, or abstract upgrades with no thematic connection
 

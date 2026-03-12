@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { GearSlot, Hero, HeroClass, MaterialId } from "../data/types";
+import type { GearSlot, Hero, MaterialId } from "../data/types";
 import { EnergyBar } from "./EnergyBar";
 import { MATERIAL_LABELS } from "../data/crafting";
 import { RARITY_LABELS } from "../data/rarity";
 import { formatGearStats, getGearPower } from "../game/gearGenerator";
 import { getAgePhase } from "../game/character";
 
-const HERO_CLASSES: HeroClass[] = ["warrior", "rogue", "mage", "guardian", "bard"];
 
 interface HeroStatusProps {
   hero: Hero;
   maxEnergy: number;
   energyUsedToday: number;
   onRename?: (name: string) => void;
-  onChangeClass?: (heroClass: HeroClass) => void;
 }
 
 const RARITY_COLOR: Record<string, string> = {
@@ -31,11 +29,7 @@ const SLOT_LABELS: Record<GearSlot, string> = {
   offhand: "Off-hand",
 };
 
-function formatClassLabel(heroClass: Hero["heroClass"]): string {
-  return `${heroClass.charAt(0).toUpperCase()}${heroClass.slice(1)}`;
-}
-
-export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename, onChangeClass }: HeroStatusProps) {
+export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroStatusProps) {
   const canChangeCharacter = hero.inGameDay === 1;
   const [selectedSlot, setSelectedSlot] = useState<GearSlot>();
   const [isEditingName, setIsEditingName] = useState(false);
@@ -128,20 +122,7 @@ export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename, onChang
             <span className="text-white font-bold text-lg">{hero.name}</span>
           )}
           <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-            {canChangeCharacter && onChangeClass !== undefined ? (
-              <select
-                className="bg-gray-800 border border-gray-600 rounded text-gray-200 text-xs px-2 py-0.5 capitalize"
-                onChange={(e) => { onChangeClass(e.target.value as HeroClass); }}
-                value={hero.heroClass}
-              >
-                {HERO_CLASSES.map((c) => (
-                  <option key={c} value={c}>{formatClassLabel(c)}</option>
-                ))}
-              </select>
-            ) : (
-              <span className="text-gray-400 text-xs capitalize">{formatClassLabel(hero.heroClass)}</span>
-            )}
-            <span className="text-gray-500 text-xs">· Lv.{hero.level}</span>
+            <span className="text-gray-500 text-xs">Lv.{hero.level}</span>
           </div>
         </div>
         <div className="text-right">

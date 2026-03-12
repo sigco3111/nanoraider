@@ -624,6 +624,39 @@ export function getActivityUnlockGaps(hero: Hero, def: ActivityDefinition, meta:
   return gaps;
 }
 
+/**
+ * Build a list of human-readable reasons why an activity cannot currently be planned.
+ * Used by the planning UI to surface energy, gold, unlock, and daily limit blockers.
+ */
+export function buildActivityBlockedReasons(
+  hero: Hero,
+  def: ActivityDefinition,
+  meta: MetaProgression,
+  energyRemaining: number,
+  goldRemaining: number,
+  usesToday: number,
+): string[] {
+  const reasons: string[] = [];
+
+  if (energyRemaining < def.energyCost) {
+    reasons.push(`energy ${energyRemaining}/${def.energyCost}`);
+  }
+
+  const goldCost = def.goldCost ?? 0;
+  if (goldRemaining < goldCost) {
+    reasons.push(`gold ${goldRemaining}/${goldCost}`);
+  }
+
+  reasons.push(...getActivityUnlockGaps(hero, def, meta));
+
+  if (def.maxDailyUses !== undefined && usesToday >= def.maxDailyUses) {
+    const safeUses = Math.min(usesToday, def.maxDailyUses);
+    reasons.push(`daily limit ${safeUses}/${def.maxDailyUses}`);
+  }
+
+  return reasons;
+}
+
 export function canAffordActivities(activities: ActivityId[], maxEnergy: number): boolean {
   const total = activities.reduce((sum, id) => {
     const def = ACTIVITIES[id];

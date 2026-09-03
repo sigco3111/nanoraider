@@ -24,10 +24,10 @@ const PURPLE_UPGRADE_BASE: Omit<RecipeDefinition, "id" | "slot" | "rarity"> = {
 };
 
 export const MATERIAL_LABELS: Record<MaterialId, string> = {
-  iron_shards: "Iron Shards",
-  arcane_essence: "Arcane Essence",
-  ember_core: "Ember Core",
-  vault_relic: "Vault Relic",
+  iron_shards: "철 조각",
+  arcane_essence: "비전 정수",
+  ember_core: "잿불 핵",
+  vault_relic: "금고 유물",
 };
 
 export const RECIPE_DEFINITIONS: Record<RecipeId, RecipeDefinition> = {
@@ -52,8 +52,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "quartermaster_iron_bundle",
     vendorId: "quartermaster",
-    name: "Starter Scrap Bundle",
-    description: "Reliable early crafting fuel.",
+    name: "초급 고철 묶음",
+    description: "초반 제작을 위한 안정적인 연료.",
     tier: 1,
     costs: { gold: 45 },
     rewards: { materials: { iron_shards: 5 } },
@@ -61,8 +61,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "quartermaster_supply_kit",
     vendorId: "quartermaster",
-    name: "Raid Supply Crate",
-    description: "Mixed prep materials for risky days.",
+    name: "레이드 보급 상자",
+    description: "위험한 날을 위한 혼합 준비 재료.",
     tier: 1,
     costs: { gold: 90 },
     rewards: { materials: { iron_shards: 3, arcane_essence: 1 } },
@@ -70,8 +70,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "artisan_arcane_pack",
     vendorId: "artisan",
-    name: "Arcane Components",
-    description: "Core reagent for rare crafts.",
+    name: "비전 재료 묶음",
+    description: "희귀 제작의 핵심 시약.",
     tier: 1,
     costs: { gold: 80, materials: { iron_shards: 2 } },
     rewards: { materials: { arcane_essence: 2 } },
@@ -79,8 +79,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "artisan_head_blueprint",
     vendorId: "artisan",
-    name: "Head Rare Blueprint",
-    description: "Unlock targeted head-slot blue crafting.",
+    name: "머리 희귀 청사진",
+    description: "머리 슬롯의 청색 제작을 해금합니다.",
     tier: 1,
     costs: { gold: 120 },
     rewards: { recipeUnlocks: ["craft_blue_head"] },
@@ -88,8 +88,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "artisan_chest_blueprint",
     vendorId: "artisan",
-    name: "Chest Rare Blueprint",
-    description: "Unlock targeted chest-slot blue crafting.",
+    name: "가슴 희귀 청사진",
+    description: "가슴 슬롯의 청색 제작을 해금합니다.",
     tier: 1,
     costs: { gold: 120 },
     rewards: { recipeUnlocks: ["craft_blue_chest"] },
@@ -97,8 +97,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "artisan_legs_blueprint",
     vendorId: "artisan",
-    name: "Legs Rare Blueprint",
-    description: "Unlock targeted legs-slot blue crafting.",
+    name: "다리 희귀 청사진",
+    description: "다리 슬롯의 청색 제작을 해금합니다.",
     tier: 1,
     costs: { gold: 120 },
     rewards: { recipeUnlocks: ["craft_blue_legs"] },
@@ -106,8 +106,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "artisan_mainhand_blueprint",
     vendorId: "artisan",
-    name: "Mainhand Rare Blueprint",
-    description: "Unlock targeted mainhand blue crafting.",
+    name: "주무기 희귀 청사진",
+    description: "주무기 슬롯의 청색 제작을 해금합니다.",
     tier: 2,
     costs: { gold: 180, materials: { arcane_essence: 2 } },
     rewards: { recipeUnlocks: ["craft_blue_mainhand"] },
@@ -115,8 +115,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "artisan_offhand_blueprint",
     vendorId: "artisan",
-    name: "Offhand Rare Blueprint",
-    description: "Unlock targeted offhand blue crafting.",
+    name: "보조무기 희귀 청사진",
+    description: "보조무기 슬롯의 청색 제작을 해금합니다.",
     tier: 2,
     costs: { gold: 180, materials: { arcane_essence: 2 } },
     rewards: { recipeUnlocks: ["craft_blue_offhand"] },
@@ -124,8 +124,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "broker_relic_cache",
     vendorId: "broker",
-    name: "Suspicious Relic Cache",
-    description: "Expensive, swingy relic stash.",
+    name: "수상한 유물 밀매",
+    description: "비싸지만 기복이 큰 유물 묶음.",
     tier: 2,
     costs: { gold: 220 },
     rewards: { materials: { arcane_essence: 3, ember_core: 1 } },
@@ -134,8 +134,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "broker_discounted_focus",
     vendorId: "broker",
-    name: "Discounted Enchanter Focus",
-    description: "A known strong offhand, below market price.",
+    name: "할인된 마법사 집중구",
+    description: "시세보다 저렴한 강력한 보조무기.",
     tier: 2,
     costs: { gold: 150 },
     rewards: { fixedItemId: "enchanters_focus" },
@@ -144,8 +144,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "raid_provisioner_ember_pack",
     vendorId: "raid_provisioner",
-    name: "Ember Pack",
-    description: "Required for purple upgrades.",
+    name: "잿불 팩",
+    description: "영웅 등급 강화에 필수.",
     tier: 1,
     costs: { gold: 180, materials: { arcane_essence: 2 } },
     rewards: { materials: { ember_core: 2 } },
@@ -153,8 +153,8 @@ const VENDOR_OFFERS: VendorOffer[] = [
   {
     id: "raid_provisioner_vault_relic",
     vendorId: "raid_provisioner",
-    name: "Vault Relic",
-    description: "Capstone-grade forging catalyst.",
+    name: "금고 유물",
+    description: "최종 단계 제련 촉매제.",
     tier: 2,
     costs: { gold: 260, materials: { ember_core: 2 } },
     rewards: { materials: { vault_relic: 1 } },
@@ -186,4 +186,3 @@ export function baseVendorTierUnlocks(): Partial<Record<VendorId, VendorTier>> {
 export function defaultKnownRecipes(): RecipeId[] {
   return SLOT_ORDER.map((slot) => `reforge_green_${slot}` as RecipeId);
 }
-

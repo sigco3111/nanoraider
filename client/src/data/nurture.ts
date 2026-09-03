@@ -3,16 +3,16 @@ import type { DailyEventDefinition, DailyEventId } from "./types";
 export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
   militia_training: {
     id: "militia_training",
-    title: "Militia Drills in Town Square",
-    description: "A local militia prepares for a looming siege and asks you to lead one decisive drill.",
+    title: "광장에서의 민병대 훈련",
+    description: "다가오는 포위전에 대비해 지역 민병대가 결단의 훈련을 이끌 자를 요청합니다.",
     minDay: 1,
     maxDay: 6,
     weight: 3,
     choices: [
       {
         id: "sparring",
-        label: "Join Full-Contact Sparring",
-        description: "Take command in brutal live-fire drills and harden your edge for future raids.",
+        label: "실전 격려 훈련에 합류",
+        description: "잔인한 실전 훈련에서 지휘를 맡아 향후 레이드를 위한 강철 의지를 단련합니다.",
         effects: {
           triangle: { war: 10, wit: -2, wealth: -1 },
           daring: 8,
@@ -21,8 +21,8 @@ export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
       },
       {
         id: "observe",
-        label: "Observe and Analyze Their Tactics",
-        description: "Study every mistake and redesign their battle plan around disciplined execution.",
+        label: "전술을 관찰·분석",
+        description: "모든 실수를 연구해 정밀한 실행에 기반한 전투 계획을 재설계합니다.",
         effects: {
           triangle: { wit: 8, war: -2 },
           bossReadiness: { molten_fury: 10 },
@@ -32,8 +32,8 @@ export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
       },
       {
         id: "broker_supplies",
-        label: "Broker Supply Contracts",
-        description: "Negotiate emergency war contracts that decide who gets steel and food before dawn.",
+        label: "보급 계약 중재",
+        description: "새벽 전 누구에게 철강과 식량이 갈지를 결정하는 긴급 전쟁 계약을 협상합니다.",
         effects: {
           triangle: { wealth: 8, wit: 2 },
           renown: 10,
@@ -45,16 +45,16 @@ export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
   },
   traveling_merchant: {
     id: "traveling_merchant",
-    title: "Traveling Merchant Caravan",
-    description: "A heavily guarded caravan arrives with relic cargo and offers one make-or-break deal.",
+    title: "순회 상인 행렬",
+    description: "무장 호위대가 유물 화물과 함께 도착해 단 한 번의 결단적 거래를 제안합니다.",
     minDay: 1,
     maxDay: 10,
     weight: 2,
     choices: [
       {
         id: "haggle",
-        label: "Haggle for Better Margins",
-        description: "Drive a ruthless negotiation that could fund your run for days if it lands.",
+        label: "더 좋은 마진을 위해 협상",
+        description: "성공 시 며칠간 모험을 자금을 마련할 수 있는 가혹한 협상을 주도합니다.",
         effects: {
           triangle: { wealth: 10, wit: 1 },
           renown: 2,
@@ -65,8 +65,8 @@ export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
       },
       {
         id: "escort",
-        label: "Escort the Caravan Safely",
-        description: "Guard the route through ambush country and earn trust from every guild on the road.",
+        label: "행렬을 안전하게 호위",
+        description: "매복이 빈번한 도로를 호위하며 길 위 모든 길드의 신뢰를 얻습니다.",
         effects: {
           triangle: { war: 5, wit: 1, wealth: 1 },
           renown: 8,
@@ -79,16 +79,16 @@ export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
   },
   scholar_lecture: {
     id: "scholar_lecture",
-    title: "Forbidden Lecture at Scholomance",
-    description: "A reclusive scholar unveils forbidden raid doctrine to one trusted listener.",
+    title: "스콜로맨스의 금강 강의",
+    description: "은둔한 학자가 한 명의 신뢰할 수 있는 청중에게만 금지된 레이드 교리를 공개합니다.",
     minDay: 2,
     maxDay: 12,
     weight: 2,
     choices: [
       {
         id: "attend",
-        label: "Attend and Take Notes",
-        description: "Commit to the full lecture and leave with dangerous knowledge most heroes never see.",
+        label: "강의에 참석해 노트",
+        description: "강의 전체에 집중해 대부분의 영웅이 결코 보지 못하는 위험한 지식을 얻습니다.",
         effects: {
           triangle: { wit: 10, war: -2 },
           bossReadiness: { molten_fury: 20 },
@@ -99,8 +99,8 @@ export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
       },
       {
         id: "skip_for_contract",
-        label: "Skip It for a Paid Contract",
-        description: "Walk out to sign a lucrative private contract and convert your influence into cash now.",
+        label: "유료 계약을 위해 강의 불참",
+        description: "강의장을 빠져나가 유리한 사적 계약을 체결해 영향력을 곧바로 현금으로 전환합니다.",
         effects: {
           triangle: { wealth: 9, wit: -2 },
           renown: 2,
@@ -113,16 +113,16 @@ export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
   },
   guild_conflict: {
     id: "guild_conflict",
-    title: "Guild Council Conflict",
-    description: "A high-stakes guild schism erupts and both sides demand your public allegiance.",
+    title: "길드 회의의 분쟁",
+    description: "고위험 길드 분열이 폭발하며 양측 모두 당신의 공개적 지지를 요구합니다.",
     minDay: 3,
     maxDay: 18,
     weight: 1,
     choices: [
       {
         id: "mediate",
-        label: "Mediate and Keep the Peace",
-        description: "Broker a fragile truce and become the figure both factions now rely on.",
+        label: "중재해 평화를 유지",
+        description: "취약한 휴전을 중재해 양측이 의지하는 인물이 됩니다.",
         effects: {
           triangle: { wit: 4, wealth: 3 },
           renown: 12,
@@ -133,8 +133,8 @@ export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
       },
       {
         id: "take_risky_side",
-        label: "Take a Risky Side for Personal Gain",
-        description: "Back one warlord openly, collect immediate favors, and accept the political fallout.",
+        label: "사적 이득을 위해 한 편을 선택",
+        description: "한 장군을 공개 지지해 즉시 호의를 받지만 정치적 여파를 떠안습니다.",
         effects: {
           triangle: { war: 6, wealth: 3, wit: -2 },
           renown: -4,
@@ -150,14 +150,14 @@ export const DAILY_EVENTS: Record<DailyEventId, DailyEventDefinition> = {
 export const DAILY_EVENT_LIST = Object.values(DAILY_EVENTS);
 
 const RANDOM_NAMES = [
-  "Aldric", "Brynn", "Caelum", "Daven", "Elara", "Fenwick", "Gwen", "Holt",
-  "Isolde", "Jaryn", "Kessa", "Lorn", "Mira", "Neven", "Oryn", "Petra",
-  "Quinn", "Rael", "Sova", "Thorn", "Ulric", "Vesper", "Wren", "Xander",
-  "Yael", "Zora", "Asha", "Bowen", "Corra", "Darke", "Ebon", "Fyra",
-  "Gaunt", "Hessa", "Idris", "Jorik", "Kova", "Lysa", "Maren", "Nix",
+  "알드릭", "브린", "카엘룸", "다벤", "엘라라", "펜윅", "그웬", "홀트",
+  "이솔데", "자린", "케사", "론", "미라", "네븐", "오린", "페트라",
+  "퀸", "라엘", "소바", "손", "울릭", "베스퍼", "렌", "잔더",
+  "야엘", "조라", "아샤", "보웬", "코라", "다크", "에본", "피라",
+  "가운트", "헤사", "이드리스", "조릭", "코바", "리사", "마렌", "닉스",
 ];
 
 export function randomHeroName(): string {
   const i = Math.floor(Math.random() * RANDOM_NAMES.length);
-  return RANDOM_NAMES[i] ?? "Aldric";
+  return RANDOM_NAMES[i] ?? "알드릭";
 }

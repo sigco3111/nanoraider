@@ -3,6 +3,7 @@ import { MATERIAL_LABELS, RECIPE_DEFINITIONS } from "../../data/crafting";
 import { TOWNSPEOPLE } from "../../data/townspeople";
 import { RARITY_LABELS } from "../../data/rarity";
 import type { ActivityDefinition, GearSlot, MaterialId, RecipeId, RiskBand, VendorId } from "../../data/types";
+import { CATEGORY_LABELS, SLOT_LABELS } from "../../data/labels";
 import { useGameStore } from "../../store/gameStore";
 import { buildActivityBlockedReasons, buildRiskHints, computeActivityRisk, isActivityUnlocked } from "../../game/activityResolver";
 import { getTopTownspersonRecommendations } from "../../game/townspersonChecker";
@@ -34,10 +35,10 @@ const RISK_STYLES: Record<RiskBand, string> = {
 };
 
 const VENDOR_LABELS: Record<VendorId, string> = {
-  quartermaster: "Quartermaster",
-  artisan: "Artisan",
-  broker: "Broker",
-  raid_provisioner: "Raid Provisioner",
+  quartermaster: "군수관",
+  artisan: "장인",
+  broker: "중개상",
+  raid_provisioner: "레이드 보급병",
 };
 
 type ForgeTier = "green" | "blue" | "purple";
@@ -45,20 +46,12 @@ type ForgeTier = "green" | "blue" | "purple";
 const FORGE_TIERS: ForgeTier[] = ["green", "blue", "purple"];
 
 const FORGE_TIER_LABELS: Record<ForgeTier, string> = {
-  green: `${RARITY_LABELS.green} Forge`,
-  blue: `${RARITY_LABELS.blue} Forge`,
-  purple: `${RARITY_LABELS.purple} Forge`,
+  green: `${RARITY_LABELS.green} 제련`,
+  blue: `${RARITY_LABELS.blue} 제작`,
+  purple: `${RARITY_LABELS.purple} 강화`,
 };
 
 const FORGE_SLOT_ORDER: GearSlot[] = ["head", "chest", "legs", "mainhand", "offhand"];
-
-const FORGE_SLOT_LABELS: Record<GearSlot, string> = {
-  head: "Head",
-  chest: "Chest",
-  legs: "Legs",
-  mainhand: "Main Hand",
-  offhand: "Off-hand",
-};
 
 const FORGE_RECIPES_BY_TIER: Record<ForgeTier, Record<GearSlot, RecipeId>> = {
   green: {
@@ -84,25 +77,36 @@ const FORGE_RECIPES_BY_TIER: Record<ForgeTier, Record<GearSlot, RecipeId>> = {
   },
 };
 
+const TRIANGLE_LABEL_KR: Record<string, string> = {
+  war: "전쟁",
+  wit: "지혜",
+  wealth: "부",
+};
+
+const BOSS_LABEL_KR: Record<string, string> = {
+  molten_fury: "잿불격노",
+  eternal_throne: "영원의 왕좌",
+};
+
 function formatDetailTooltip(def: ActivityDefinition, includeCoreStats: boolean): string | null {
   const detailLines: string[] = [];
   if (includeCoreStats && def.effects.triangle !== undefined) {
     for (const [k, v] of Object.entries(def.effects.triangle)) {
       if (v !== 0) {
-        detailLines.push(`${v > 0 ? "+" : ""}${v} ${k}`);
+        detailLines.push(`${v > 0 ? "+" : ""}${v} ${TRIANGLE_LABEL_KR[k] ?? k}`);
       }
     }
   }
   if (def.effects.renown !== undefined && def.effects.renown !== 0) {
-    detailLines.push(`renown ${def.effects.renown > 0 ? "+" : ""}${def.effects.renown}`);
+    detailLines.push(`명성 ${def.effects.renown > 0 ? "+" : ""}${def.effects.renown}`);
   }
   if (def.effects.daring !== undefined && def.effects.daring !== 0) {
-    detailLines.push(`daring ${def.effects.daring > 0 ? "+" : ""}${def.effects.daring}`);
+    detailLines.push(`대담함 ${def.effects.daring > 0 ? "+" : ""}${def.effects.daring}`);
   }
   if (def.effects.bossReadiness !== undefined) {
     for (const [k, v] of Object.entries(def.effects.bossReadiness)) {
       if (v !== 0) {
-        detailLines.push(`${k} readiness ${v > 0 ? "+" : ""}${String(v)}%`);
+        detailLines.push(`${BOSS_LABEL_KR[k] ?? k} 준비도 ${v > 0 ? "+" : ""}${String(v)}%`);
       }
     }
   }
@@ -137,10 +141,10 @@ function ActivityCard({
   return (
     <div className={`border rounded-lg p-3 flex flex-col gap-2 ${colorBorder} ${!canUse ? "opacity-55" : ""}`}>
       <div className="flex items-start justify-between gap-1">
-        <span className={`text-xs px-1.5 py-0.5 rounded capitalize ${badge}`}>{def.category}</span>
+        <span className={`text-xs px-1.5 py-0.5 rounded ${badge}`}>{CATEGORY_LABELS[def.category] ?? def.category}</span>
         {def.deathRisk > 0 ? (
           <span className={`text-xs ${RISK_STYLES[riskBand]}`}>
-            {isLethal ? "☠️" : ""} {Math.round(effectiveDeathRisk * 100)}% {isLethal ? `death` : "failure"}
+            {isLethal ? "☠️" : ""} {Math.round(effectiveDeathRisk * 100)}% {isLethal ? `사망` : "실패"}
           </span>
         ) : null}
       </div>
@@ -158,7 +162,7 @@ function ActivityCard({
           <p className="text-[10px] text-gray-400 mt-1">Lv {def.levelRange.min}-{def.levelRange.max}</p>
         ) : null}
         {!canUse && blockedReasons.length > 0 && (
-          <p className="text-red-300 text-[10px] mt-2">Needs: {blockedReasons.join(", ")}</p>
+          <p className="text-red-300 text-[10px] mt-2">필요: {blockedReasons.join(", ")}</p>
         )}
         {def.deathRisk > 0 && riskHints.length > 0 && (
           <p className="text-gray-400 text-[10px] mt-2">{riskHints.join(" • ")}</p>
@@ -168,7 +172,7 @@ function ActivityCard({
         <div className="flex gap-2 text-xs text-gray-400">
           <span className="text-yellow-400 font-bold">⚡{def.energyCost}</span>
           {(def.goldCost ?? 0) > 0 && <span className="text-red-300 font-bold">-◈{def.goldCost}g</span>}
-          <span>⏱{def.durationHours}h</span>
+          <span>⏱{def.durationHours}시간</span>
         </div>
         <button
           className="bg-yellow-500 hover:bg-yellow-400 disabled:bg-gray-700 disabled:text-gray-500 text-black font-bold text-xs px-2.5 py-1 rounded transition-colors shrink-0"
@@ -241,28 +245,28 @@ export function PlanningScreen() {
   const hasRerollUpgrade = meta.apUpgrades.includes("vendor_reroll_1");
   const canUseReroll = hasRerollUpgrade && rerollsRemaining > 0 && goldRemaining >= 10;
   const rerollLabel = !hasRerollUpgrade
-    ? "Reroll (requires AP upgrade)"
+    ? "리롤 (AP 업그레이드 필요)"
     : rerollsRemaining <= 0
-      ? "Reroll used today"
+      ? "오늘 리롤 사용 완료"
       : goldRemaining < 10
-        ? "Need 10g to reroll"
-        : "Reroll Current Vendor (10g)";
+        ? "리롤에 10g 필요"
+        : "현재 상인 리롤 (10g)";
 
   return (
     <div className="min-h-screen p-4 space-y-4 max-w-2xl mx-auto">
-      {/* Evolution recommendations - top of page */}
+      {/* 진화 추천 - 페이지 상단 */}
       {townspersonRecommendations.length > 0 && (
         <div className="bg-gray-800/80 border border-cyan-600 rounded-lg p-4">
           <div className="flex items-center justify-between mb-1">
-            <h3 className="text-cyan-200 text-xs font-bold uppercase tracking-widest">Outpost Targets</h3>
+            <h3 className="text-cyan-200 text-xs font-bold uppercase tracking-widest">전초기지 목표</h3>
             <button
               className="text-gray-400 hover:text-gray-200 text-sm"
               onClick={() => { goTo("collection"); }}
             >
-              🏠 Outpost
+              🏠 전초기지
             </button>
           </div>
-          <p className="text-gray-400 text-xs mb-3">Roles to aim for this run</p>
+          <p className="text-gray-400 text-xs mb-3">이번 모험에서 노려볼 역할</p>
           <div className="flex gap-3 flex-wrap">
             {townspersonRecommendations.map((rec) => {
               const role = TOWNSPEOPLE[rec.roleId];
@@ -280,20 +284,20 @@ export function PlanningScreen() {
         </div>
       )}
 
-      {/* Header */}
+      {/* 헤더 */}
       <div className="flex items-center justify-between">
-        <h2 className="text-yellow-400 font-bold text-lg">Day {hero.inGameDay} Planning</h2>
+        <h2 className="text-yellow-400 font-bold text-lg">{hero.inGameDay}일 차 계획</h2>
         {townspersonRecommendations.length === 0 && (
           <button
             className="text-gray-400 hover:text-gray-200 text-sm"
             onClick={() => { goTo("collection"); }}
           >
-            🏠 Outpost
+            🏠 전초기지
           </button>
         )}
       </div>
 
-      {/* Hero status */}
+      {/* 영웅 상태 */}
       <HeroStatus
         energyUsedToday={totalEnergyUsed}
         hero={hero}
@@ -306,21 +310,21 @@ export function PlanningScreen() {
           className={`flex-1 font-bold py-2 rounded text-sm border ${vendorsForgeTab === "vendors" ? "bg-gray-700 border-gray-500 text-white" : "bg-gray-800 hover:bg-gray-700 border-gray-700 text-gray-200"}`}
           onClick={() => { setVendorsForgeTab((prev) => (prev === "vendors" ? null : "vendors")); }}
         >
-          Visit Vendors
+          상인 방문
         </button>
         <button
           className={`flex-1 font-bold py-2 rounded text-sm border ${vendorsForgeTab === "forge" ? "bg-gray-700 border-gray-500 text-white" : "bg-gray-800 hover:bg-gray-700 border-gray-700 text-gray-200"}`}
           onClick={() => { setVendorsForgeTab((prev) => (prev === "forge" ? null : "forge")); }}
         >
-          Forge / Upgrade
+          제련 / 강화
         </button>
       </div>
 
       {vendorsForgeTab === "vendors" ? (
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-gray-300 text-xs font-bold uppercase tracking-widest">Vendors</h3>
-            <span className="text-xs text-gray-400">Rerolls: {rerollsRemaining}</span>
+            <h3 className="text-gray-300 text-xs font-bold uppercase tracking-widest">상인</h3>
+            <span className="text-xs text-gray-400">리롤: {rerollsRemaining}</span>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1">
             {(Object.keys(VENDOR_LABELS) as VendorId[]).map((id) => (
@@ -335,7 +339,7 @@ export function PlanningScreen() {
             ))}
           </div>
           <div className="grid grid-cols-1 gap-2">
-            {vendorOffers.length === 0 && <div className="text-xs text-gray-500">No offers unlocked for this vendor yet.</div>}
+            {vendorOffers.length === 0 && <div className="text-xs text-gray-500">이 상인에게 아직 해금된 거래가 없습니다.</div>}
             {vendorOffers.map((offer) => {
               const goldCost = Math.max(0, Math.round((offer.costs.gold ?? 0) * (1 - (meta.townspersonBonuses.vendorDiscountPct ?? 0))));
               const materialCostParts = Object.entries(offer.costs.materials ?? {}).map(([id, amount]) => `${amount} ${MATERIAL_LABELS[id as keyof typeof MATERIAL_LABELS]}`);
@@ -346,7 +350,7 @@ export function PlanningScreen() {
                   <div className="text-sm text-white font-bold">{offer.name}</div>
                   <div className="text-xs text-gray-400">{offer.description}</div>
                   <div className="text-xs text-gray-300 mt-1">
-                    Cost: {goldCost}g{materialCostParts.length > 0 ? ` + ${materialCostParts.join(", ")}` : ""}
+                    비용: {goldCost}g{materialCostParts.length > 0 ? ` + ${materialCostParts.join(", ")}` : ""}
                   </div>
                   <button
                     className="mt-2 bg-yellow-500 hover:bg-yellow-400 disabled:bg-gray-700 disabled:text-gray-500 text-black text-xs font-bold px-2 py-1 rounded"
@@ -354,7 +358,7 @@ export function PlanningScreen() {
                     onClick={() => { buyVendorOffer(offer); }}
                     type="button"
                   >
-                    {canBuy ? "Buy" : "Need more gold"}
+                    {canBuy ? "구매" : "골드 부족"}
                   </button>
                 </div>
               );
@@ -373,7 +377,7 @@ export function PlanningScreen() {
 
       {vendorsForgeTab === "forge" ? (
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 space-y-3">
-          <h3 className="text-gray-300 text-xs font-bold uppercase tracking-widest">Forge / Upgrade</h3>
+          <h3 className="text-gray-300 text-xs font-bold uppercase tracking-widest">제련 / 강화</h3>
           <div className="flex gap-2 overflow-x-auto pb-1">
             {FORGE_TIERS.map((tier) => (
               <button
@@ -409,15 +413,15 @@ export function PlanningScreen() {
                   type="button"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-gray-100">{FORGE_SLOT_LABELS[slot]}</span>
+                    <span className="text-sm font-bold text-gray-100">{SLOT_LABELS[slot] ?? slot}</span>
                     {slotKnown ? (
-                      <span className={`text-[10px] font-bold ${slotCanCraft ? "text-green-400" : "text-gray-400"}`}>{slotCanCraft ? "Ready" : "Blocked"}</span>
+                      <span className={`text-[10px] font-bold ${slotCanCraft ? "text-green-400" : "text-gray-400"}`}>{slotCanCraft ? "준비됨" : "불가"}</span>
                     ) : (
-                      <span className="text-[10px] font-bold text-orange-400">Locked</span>
+                      <span className="text-[10px] font-bold text-orange-400">잠김</span>
                     )}
                   </div>
                   {!slotKnown ? (
-                    <div className="text-[11px] text-orange-300 mt-1">Recipe unknown · Artisan vendor</div>
+                    <div className="text-[11px] text-orange-300 mt-1">레시피 미습득 · 장인 상인</div>
                   ) : (
                     <>
                       <div className="text-[11px] text-gray-300 mt-1">⚡{slotRecipe.energyCost} · {slotGold}g</div>
@@ -433,14 +437,14 @@ export function PlanningScreen() {
 
           <div className="bg-gray-800 border border-gray-700 rounded p-3 space-y-2">
             <div className="text-sm font-bold text-gray-100">
-              {FORGE_SLOT_LABELS[selectedForgeSlot]} · {FORGE_TIER_LABELS[forgeTier]}
+              {SLOT_LABELS[selectedForgeSlot] ?? selectedForgeSlot} · {FORGE_TIER_LABELS[forgeTier]}
             </div>
-            <div className="text-xs text-gray-400">Recipe: {selectedRecipe}</div>
+            <div className="text-xs text-gray-400">레시피: {selectedRecipe}</div>
 
             {!hasKnownRecipe ? (
               <div className="space-y-2">
                 <div className="text-xs text-orange-300">
-                  Recipe not learned. Visit the Artisan vendor to purchase the blueprint first.
+                  레시피를 아직 배우지 않았습니다. 장인 상인을 방문해 청사진을 먼저 구매하세요.
                 </div>
                 <button
                   className="bg-gray-700 hover:bg-gray-600 border border-gray-600 text-gray-200 text-xs font-bold px-2 py-1 rounded"
@@ -450,20 +454,20 @@ export function PlanningScreen() {
                   }}
                   type="button"
                 >
-                  Open Artisan Vendor
+                  장인 상인 열기
                 </button>
               </div>
             ) : (
               <>
                 <div className="text-xs text-gray-300">
-                  Energy {recipe.energyCost} · Gold {discountedRecipeGold} · Materials {materialChecks.map(({ id, required }) => `${required} ${MATERIAL_LABELS[id]}`).join(", ")}
+                  에너지 {recipe.energyCost} · 골드 {discountedRecipeGold} · 재료 {materialChecks.map(({ id, required }) => `${required} ${MATERIAL_LABELS[id]}`).join(", ")}
                 </div>
                 <div className="grid grid-cols-1 gap-1 text-xs">
                   <div className={energyRemaining >= recipe.energyCost ? "text-green-400" : "text-red-300"}>
-                    Energy: {energyRemaining}/{recipe.energyCost}
+                    에너지: {energyRemaining}/{recipe.energyCost}
                   </div>
                   <div className={goldRemaining >= discountedRecipeGold ? "text-green-400" : "text-red-300"}>
-                    Gold: {goldRemaining}/{discountedRecipeGold}
+                    골드: {goldRemaining}/{discountedRecipeGold}
                   </div>
                   {materialChecks.map(({ id, required, owned, hasEnough }) => (
                     <div className={hasEnough ? "text-green-400" : "text-red-300"} key={id}>
@@ -477,7 +481,7 @@ export function PlanningScreen() {
                   onClick={() => { craftRecipe(selectedRecipe); }}
                   type="button"
                 >
-                  {canCraftRecipe ? "Confirm Craft" : "Missing requirements"}
+                  {canCraftRecipe ? "제작 확정" : "요구 사항 부족"}
                 </button>
               </>
             )}
@@ -485,9 +489,9 @@ export function PlanningScreen() {
         </div>
       ) : null}
 
-      {/* Available activities */}
+      {/* 가능한 활동 */}
       <div className="space-y-2">
-        <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">Available Activities</h3>
+        <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">가능한 활동</h3>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {availableActivities.map((def) => {
             const previewRisk = computeActivityRisk(hero, def.id, meta);
@@ -500,8 +504,8 @@ export function PlanningScreen() {
             const dailyLimitLabel = hasDailyCap && totalCount > 0 && def.maxDailyUses !== undefined
               ? `${Math.min(totalCount, maxDailyUses)}/${def.maxDailyUses}`
               : hasDailyCap
-                ? "Plan"
-                : "+ Plan";
+                ? "계획"
+                : "+ 계획";
 
             const canUse =
               energyRemaining >= def.energyCost
@@ -535,21 +539,21 @@ export function PlanningScreen() {
         </div>
       </div>
 
-      {/* Planned queue */}
+      {/* 계획 큐 */}
       <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-white font-bold text-sm uppercase tracking-widest">Planned Activities</h3>
+          <h3 className="text-white font-bold text-sm uppercase tracking-widest">계획된 활동</h3>
           {plannedActivities.length > 0 && (
             <button
               className="text-xs text-gray-400 hover:text-gray-200"
               onClick={clearPlan}
             >
-              Clear plan
+              계획 비우기
             </button>
           )}
         </div>
         {plannedActivities.length === 0 ? (
-          <p className="text-gray-500 text-sm">No activities planned yet.</p>
+          <p className="text-gray-500 text-sm">아직 계획된 활동이 없습니다.</p>
         ) : (
           <div className="space-y-2">
             {plannedActivities.map((activityId, index) => {
@@ -567,7 +571,7 @@ export function PlanningScreen() {
                     className="text-xs text-red-300 hover:text-red-200"
                     onClick={() => { unplanActivity(index); }}
                   >
-                    Remove
+                    제거
                   </button>
                 </div>
               );
@@ -576,21 +580,21 @@ export function PlanningScreen() {
         )}
       </div>
 
-      {/* Day controls */}
+      {/* 일차 제어 */}
       <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-white font-bold text-sm uppercase tracking-widest">Current Day</h3>
+          <h3 className="text-white font-bold text-sm uppercase tracking-widest">현재 일차</h3>
           <span className={`font-bold text-sm ${energyRemaining > 0 ? "text-yellow-400" : "text-red-400"}`}>
-            ⚡ {energyRemaining} remaining
+            ⚡ {energyRemaining} 남음
           </span>
         </div>
         <div className="text-gray-400 text-sm">
-          Planned actions: {plannedActivities.length}
+          계획된 행동: {plannedActivities.length}
         </div>
 
         {hero.inGameDay >= 10 && (
           <div className="text-orange-400 text-xs text-center">
-            ⚠ Day {hero.inGameDay}: Old age approaches. Death risk rises each day.
+            ⚠ {hero.inGameDay}일 차: 노년이 다가옵니다. 매일 사망 위험이 증가합니다.
           </div>
         )}
 
@@ -599,7 +603,7 @@ export function PlanningScreen() {
             className="flex-1 bg-green-700 hover:bg-green-600 text-white font-bold py-2 rounded transition-colors"
             onClick={endDay}
           >
-            End Day / Resolve Plan
+            일차 종료 / 계획 실행
           </button>
         </div>
       </div>

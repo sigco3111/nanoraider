@@ -10,6 +10,14 @@ const RARITY_COLOR: Record<string, string> = {
   purple: "text-purple-400",
 };
 
+const SLOT_LABEL_KR: Record<string, string> = {
+  head: "머리",
+  chest: "가슴",
+  legs: "다리",
+  mainhand: "주무기",
+  offhand: "보조",
+};
+
 function formatSignedGold(value: number): string {
   return `${value >= 0 ? "+" : ""}${value}g`;
 }
@@ -27,61 +35,61 @@ export function DayResults() {
   return (
     <div className="min-h-screen p-4 space-y-4 max-w-xl mx-auto">
       <div className="text-center">
-        <h2 className="text-yellow-400 font-bold text-xl">Day {results.day} Complete</h2>
-        <p className="text-gray-400 text-sm">Day {hero.inGameDay - 1} → Day {hero.inGameDay}</p>
+        <h2 className="text-yellow-400 font-bold text-xl">{results.day}일 차 완료</h2>
+        <p className="text-gray-400 text-sm">{hero.inGameDay - 1}일 차 → {hero.inGameDay}일 차</p>
       </div>
 
-      {/* Summary bar */}
+      {/* 요약 바 */}
       <div className="grid grid-cols-4 gap-3 text-center">
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-3">
           <div className="text-blue-400 font-bold text-xl">+{results.totalXp}</div>
-          <div className="text-gray-400 text-xs">XP</div>
+          <div className="text-gray-400 text-xs">경험치</div>
         </div>
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-3">
           <div className={`font-bold text-xl ${results.totalGold >= 0 ? "text-yellow-400" : "text-red-300"}`}>
             {formatSignedGold(results.totalGold)}
           </div>
-          <div className="text-gray-400 text-xs">Gold (Net)</div>
-          {results.totalGoldSpent > 0 && <div className="text-red-300 text-[10px] mt-1">-{results.totalGoldSpent}g spent</div>}
+          <div className="text-gray-400 text-xs">골드 (순)</div>
+          {results.totalGoldSpent > 0 && <div className="text-red-300 text-[10px] mt-1">-{results.totalGoldSpent}g 사용</div>}
         </div>
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-3">
           <div className="text-purple-400 font-bold text-xl">{results.lootObtained.length}</div>
-          <div className="text-gray-400 text-xs">Items</div>
+          <div className="text-gray-400 text-xs">아이템</div>
         </div>
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-3">
           <div className="text-indigo-400 font-bold text-xl">{results.eventsResolved.length}</div>
-          <div className="text-gray-400 text-xs">Events</div>
+          <div className="text-gray-400 text-xs">이벤트</div>
         </div>
       </div>
 
-      {/* Loot */}
+      {/* 전리품 */}
       {results.lootObtained.length > 0 && (
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 space-y-2">
-          <h3 className="text-gray-300 text-xs font-bold uppercase tracking-widest">Loot Obtained</h3>
+          <h3 className="text-gray-300 text-xs font-bold uppercase tracking-widest">획득한 전리품</h3>
           {results.lootObtained.map((item, i) => (
             <div className="flex items-center justify-between" key={`${item.id}-${i}`}>
               <span className={`font-bold text-sm ${RARITY_COLOR[item.rarity] ?? "text-gray-400"}`}>{item.name}</span>
-              <span className="text-gray-500 text-xs capitalize">{item.slot}{formatGearStats(item.power) ? ` · ${formatGearStats(item.power)}` : ""}</span>
+              <span className="text-gray-500 text-xs">{SLOT_LABEL_KR[item.slot] ?? item.slot}{formatGearStats(item.power) ? ` · ${formatGearStats(item.power)}` : ""}</span>
             </div>
           ))}
         </div>
       )}
 
-      {/* Activity breakdown */}
+      {/* 행동 내역 */}
       <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 space-y-2">
-        <h3 className="text-gray-300 text-xs font-bold uppercase tracking-widest">Action Log</h3>
+        <h3 className="text-gray-300 text-xs font-bold uppercase tracking-widest">행동 기록</h3>
         {results.activitiesResolved.map((r, i) => {
           const def = ACTIVITIES[r.activityId];
           return (
             <div className="flex items-center justify-between text-sm" key={i}>
               <span className="text-gray-300">{def.name}</span>
               <div className="flex gap-3 text-xs">
-                {r.failed ? <span className="text-orange-300">Failed (no rewards)</span> : null}
-                {r.xpGained > 0 && <span className="text-blue-400">+{r.xpGained} XP</span>}
+                {r.failed ? <span className="text-orange-300">실패 (보상 없음)</span> : null}
+                {r.xpGained > 0 && <span className="text-blue-400">+{r.xpGained} 경험치</span>}
                 {r.goldGained > 0 && <span className="text-yellow-400">+{r.goldGained}g</span>}
                 {r.goldSpent > 0 && <span className="text-red-300">-{r.goldSpent}g</span>}
                 {r.lootDropped.length > 0 && (
-                  <span className="text-purple-400">+{r.lootDropped.length} item{r.lootDropped.length !== 1 ? "s" : ""}</span>
+                  <span className="text-purple-400">+{r.lootDropped.length}개 아이템</span>
                 )}
                 {r.materialsGained !== undefined && Object.keys(r.materialsGained).length > 0 && (
                   <span className="text-cyan-300">
@@ -94,16 +102,16 @@ export function DayResults() {
         })}
         {results.eventsResolved.map((event, i) => (
           <div className="flex items-center justify-between text-sm border-t border-gray-800 pt-2" key={`${event.eventId}-${i}`}>
-            <span className="text-indigo-300">Event: {event.eventId}</span>
+            <span className="text-indigo-300">이벤트: {event.eventId}</span>
             <div className="flex gap-3 text-xs">
-              {event.xpGained > 0 && <span className="text-blue-400">+{event.xpGained} XP</span>}
+              {event.xpGained > 0 && <span className="text-blue-400">+{event.xpGained} 경험치</span>}
               {event.goldGained > 0 && <span className="text-yellow-400">+{event.goldGained}g</span>}
             </div>
           </div>
         ))}
         {results.transactions.map((tx, i) => (
           <div className="flex items-center justify-between text-sm border-t border-gray-800 pt-2" key={`${tx.label}-${i}`}>
-            <span className="text-cyan-300">{tx.kind === "craft" ? "Forge" : "Vendor"}: {tx.label}</span>
+            <span className="text-cyan-300">{tx.kind === "craft" ? "제련" : "상인"}: {tx.label}</span>
             <div className="flex gap-3 text-xs">
               {(tx.energySpent ?? 0) > 0 && <span className="text-yellow-400">⚡{tx.energySpent}</span>}
               {(tx.goldSpent ?? 0) > 0 && <span className="text-red-300">-{tx.goldSpent}g</span>}
@@ -112,7 +120,7 @@ export function DayResults() {
         ))}
       </div>
 
-      {/* Trajectory hint */}
+      {/* 트라이앵글 힌트 */}
       <div className="bg-gray-900 border border-gray-600 rounded-lg p-3 text-center">
         <TriangleHint renown={results.renownSnapshot} triangle={results.triangleSnapshot} />
       </div>
@@ -121,7 +129,7 @@ export function DayResults() {
         className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded-lg text-lg transition-colors"
         onClick={() => { goTo("planning"); }}
       >
-        Plan Day {hero.inGameDay} →
+        {hero.inGameDay}일 차 계획 →
       </button>
     </div>
   );
@@ -137,12 +145,12 @@ function TriangleHint({
   const entries = Object.entries(triangle).sort(([, a], [, b]) => b - a);
   const dominant = entries[0]?.[0] ?? "war";
   if (entries[0] === undefined) {
-    return <p className="text-gray-500 text-xs italic">Your hero is still finding their path...</p>;
+    return <p className="text-gray-500 text-xs italic">당신의 영웅은 아직 자신의 길을 찾는 중입니다...</p>;
   }
   const hints: Record<string, string> = {
-    war: "Your hero's run tilted toward War.",
-    wit: "Your hero's run tilted toward Wit.",
-    wealth: "Your hero's run tilted toward Wealth.",
+    war: "이번 모험은 전쟁 쪽으로 기울었습니다.",
+    wit: "이번 모험은 지혜 쪽으로 기울었습니다.",
+    wealth: "이번 모험은 부 쪽으로 기울었습니다.",
   };
-  return <p className="text-gray-400 text-xs italic">{hints[dominant]} Renown ended at {renown}.</p>;
+  return <p className="text-gray-400 text-xs italic">{hints[dominant]} 명성은 {renown}에서 마무리되었습니다.</p>;
 }

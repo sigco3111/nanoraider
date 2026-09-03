@@ -3,8 +3,8 @@ import type { ActivityDefinition, ActivityId } from "./types";
 export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   quest: {
     id: "quest",
-    name: "Quest",
-    description: "Complete quests in the world. Balanced XP and gold gains.",
+    name: "퀘스트 수행",
+    description: "세계의 퀘스트를 수행합니다. 균형 잡힌 경험치와 골드를 얻습니다.",
     energyCost: 10,
     durationHours: 4,
     progressionTier: "none",
@@ -26,8 +26,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
 
   dungeon_irondeep: {
     id: "dungeon_irondeep",
-    name: "Irondeep Mines",
-    description: "Entry dungeon for fresh heroes. Reliable green gear and low loot variance.",
+    name: "철심광산 던전",
+    description: "신참 영웅을 위한 입문 던전. 고급 등급 장비를 안정적으로 획득하며 전리품 변동성이 낮습니다.",
     energyCost: 24,
     goldCost: 5,
     durationHours: 2,
@@ -42,8 +42,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
     gearReadiness: {
       metric: "greenPlusSlots",
       bands: [
-        { max: 1, riskFloor: 0.5, label: "Undergeared (0-1 green+)." },
-        { min: 2, riskFloor: 0, label: "Ready" },
+        { max: 1, riskFloor: 0.5, label: "장비 부족 (고급+ 슬롯 0~1)." },
+        { min: 2, riskFloor: 0, label: "준비 완료" },
       ],
     },
     deathRisk: 0.18,
@@ -67,8 +67,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
 
   dungeon_whispering_crypts: {
     id: "dungeon_whispering_crypts",
-    name: "Whispering Crypts",
-    description: "Early caster-leaning dungeon. Strong source of green prep gear.",
+    name: "속삭이는 지하묘지",
+    description: "초반 주문사형 던전. 고급 준비 장비를 안정적으로 확보할 수 있습니다.",
     energyCost: 24,
     goldCost: 5,
     durationHours: 2,
@@ -83,8 +83,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
     gearReadiness: {
       metric: "greenPlusSlots",
       bands: [
-        { max: 1, riskFloor: 0.5, label: "Undergeared (0-1 green+)." },
-        { min: 2, riskFloor: 0, label: "Ready" },
+        { max: 1, riskFloor: 0.5, label: "장비 부족 (고급+ 슬롯 0~1)." },
+        { min: 2, riskFloor: 0, label: "준비 완료" },
       ],
     },
     deathRisk: 0.2,
@@ -108,9 +108,9 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
 
   dungeon_scholomance: {
     id: "dungeon_scholomance",
-    name: "Scholomance",
-    // Level 3 — accessible after ~2 quests on day 1
-    description: "Dark academy dungeon. High drop rates. Core Scholar legacy path.",
+    name: "스콜로맨스",
+    // 레벨 3 — 1일 차에 퀘스트 2회 수행 후 진입 가능
+    description: "어둠의 마법학원 던전. 드롭률이 높으며 학자 유산 경로의 핵심입니다.",
     energyCost: 30,
     goldCost: 10,
     durationHours: 2,
@@ -125,9 +125,9 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
     gearReadiness: {
       metric: "greenPlusSlots",
       bands: [
-        { max: 1, riskFloor: 0.5, label: "Undergeared (<40% green+)." },
-        { min: 2, max: 3, riskFloor: 0.3, label: "Borderline readiness (2-3 green+ slots)." },
-        { min: 4, riskFloor: 0, label: "Ready" },
+        { max: 1, riskFloor: 0.5, label: "장비 부족 (고급+ 40% 미만)." },
+        { min: 2, max: 3, riskFloor: 0.3, label: "준비 부족 (고급+ 슬롯 2~3)." },
+        { min: 4, riskFloor: 0, label: "준비 완료" },
       ],
     },
     deathRisk: 0.15,
@@ -148,55 +148,53 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
       ],
     },
   },
-
   dungeon_blackrock: {
     id: "dungeon_blackrock",
-    name: "Blackrock Depths",
-    // Level 6 — accessible by day 2-3
-    description: "Brutal underground fortress. Highest risk, highest reward. Core Berserker path.",
-    energyCost: 30,
-    goldCost: 14,
-    durationHours: 2,
+    name: "검은바위 던전",
+    description: "상급 던전. 강력한 청색 등급 장비를 확정적으로 드롭하지만 위험 부담이 큽니다.",
+    energyCost: 36,
+    goldCost: 20,
+    durationHours: 3,
     progressionTier: "mid_dungeon",
-    levelRange: { min: 12, max: 18 },
+    levelRange: { min: 16, max: 22 },
     category: "combat",
     effects: {
-      triangle: { war: 6, wit: -2, wealth: -1 },
-      daring: 5,
+      triangle: { war: 6, wit: 1, wealth: -2 },
+      daring: 4,
     },
-    unlockConditions: { minLevel: 12 },
+    unlockConditions: {
+      minLevel: 16,
+      minTriangle: { war: 30 },
+    },
     gearReadiness: {
-      metric: "greenPlusSlots",
+      metric: "bluePlusSlots",
       bands: [
-        { max: 1, riskFloor: 0.5, label: "Undergeared (<40% green+)." },
-        { min: 2, max: 3, riskFloor: 0.3, label: "Borderline readiness (2-3 green+ slots)." },
-        { min: 4, riskFloor: 0, label: "Ready" },
+        { max: 2, riskFloor: 0.65, label: "장비 부족 (청색+ 0~2)." },
+        { min: 3, riskFloor: 0, label: "준비 완료" },
       ],
     },
-    deathRisk: 0.25,
+    deathRisk: 0.32,
     riskProfile: {
-      gearFactor: 0.16,
-      prepFactor: 0.0013,
-      minRisk: 0.06,
-      maxRisk: 0.9,
+      gearFactor: 0.14,
+      prepFactor: 0.002,
+      minRisk: 0.05,
+      maxRisk: 0.92,
     },
     outcomes: {
-      xpMin: 710,
-      xpMax: 850,
-      goldMin: 88,
-      goldMax: 120,
+      xpMin: 880,
+      xpMax: 1180,
+      goldMin: 95,
+      goldMax: 150,
       lootTable: [
-        { rarity: "blue", chance: 0.28 },
-        { rarity: "blue", chance: 0.26 },
-        { rarity: "blue", chance: 0.26 },
+        { rarity: "blue", chance: 0.45 },
+        { rarity: "blue", chance: 0.3 },
       ],
     },
   },
-
   farm_gold: {
     id: "farm_gold",
-    name: "Farm Gold",
-    description: "Grind gold in safe areas. Core Merchant legacy path activity.",
+    name: "골드 파밍",
+    description: "단거리 일퀘와 호위 작업을 반복해 안정적인 골드를 벌 수 있습니다.",
     energyCost: 8,
     durationHours: 3,
     progressionTier: "none",
@@ -216,8 +214,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   },
   study_boss: {
     id: "study_boss",
-    name: "Study Boss",
-    description: "Research Molten Fury logs and mechanics. Builds tactical intel first.",
+    name: "보스 연구",
+    description: "잿불격노의 로그와 메커니즘을 조사합니다. 전술 정보를 우선적으로 축적합니다.",
     energyCost: 12,
     durationHours: 2,
     progressionTier: "none",
@@ -239,8 +237,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   },
   analyze_logs: {
     id: "analyze_logs",
-    name: "Analyze Combat Logs",
-    description: "Parse top-guild wipes and kill logs to decode Molten Fury patterns.",
+    name: "전투 로그 분석",
+    description: "상위 길드의 전멸 로그와 처치 로그를 분석해 잿불격노 패턴을 해독합니다.",
     energyCost: 10,
     durationHours: 2,
     progressionTier: "none",
@@ -261,8 +259,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   },
   training_dummy: {
     id: "training_dummy",
-    name: "Training Dummy Session",
-    description: "Drill movement and rotation until mechanics are muscle memory.",
+    name: "훈련 인형 세션",
+    description: "이동과 회전을 반복해 메커니즘을 근육 기억으로 만듭니다.",
     energyCost: 11,
     durationHours: 2,
     progressionTier: "none",
@@ -283,8 +281,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   },
   raid_rehearsal: {
     id: "raid_rehearsal",
-    name: "Raid Rehearsal",
-    description: "Run a high-pressure rehearsal to practice calls and execution timing.",
+    name: "레이드 리허설",
+    description: "고강도 리허설로 호출과 실행 타이밍을 연습합니다.",
     energyCost: 14,
     goldCost: 10,
     durationHours: 3,
@@ -316,10 +314,10 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
 
   raid_molten_fury: {
     id: "raid_molten_fury",
-    name: "Raid: Molten Fury",
-    // Level 12 — accessible around day 5-7 with dungeon grinding
-    description: "Attempt the Molten Fury raid boss. Required for the Raid Legend legacy path.",
-    // Raid boss attempts are hard-capped per in-game day regardless of remaining energy.
+    name: "레이드: 잿불격노",
+    // 레벨 12 — 던전 작 grind 후 5~7일 차 진입 가능
+    description: "잿불격노 레이드 보스에 도전합니다. 레이드 전설 유산 경로의 필수 단계입니다.",
+    // 레이드 보스 도전은 남은 에너지와 무관하게 하루 1회로 제한됩니다.
     maxDailyUses: 1,
     energyCost: 30,
     goldCost: 40,
@@ -338,9 +336,9 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
     gearReadiness: {
       metric: "bluePlusSlots",
       bands: [
-        { max: 2, riskFloor: 0.8, label: "Undergeared (0-2 blue+)." },
-        { min: 3, max: 4, riskFloor: 0.6, label: "Borderline readiness (3-4 blue+)." },
-        { min: 5, riskFloor: 0, label: "Ready" },
+        { max: 2, riskFloor: 0.8, label: "장비 부족 (청색+ 0~2)." },
+        { min: 3, max: 4, riskFloor: 0.6, label: "준비 부족 (청색+ 3~4)." },
+        { min: 5, riskFloor: 0, label: "준비 완료" },
       ],
     },
     deathRisk: 0.4,
@@ -365,9 +363,9 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   },
   raid_eternal_throne: {
     id: "raid_eternal_throne",
-    name: "Capstone Raid: Eternal Throne",
-    description: "Final exam encounter. Built for full purple gear and max preparation.",
-    // Final capstone raid is also limited to a single attempt per in-game day.
+    name: "최종 레이드: 영원의 왕좌",
+    description: "최종 시험 전투. 완전한 영웅 등급 장비와 최대 준비를 위한 보스입니다.",
+    // 최종 레이드 또한 하루 1회 도전으로 제한됩니다.
     maxDailyUses: 1,
     energyCost: 35,
     goldCost: 60,
@@ -387,9 +385,9 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
     gearReadiness: {
       metric: "purpleSlots",
       bands: [
-        { max: 2, riskFloor: 0.95, label: "Undergeared (0-2 purple)." },
-        { min: 3, max: 4, riskFloor: 0.55, label: "Borderline readiness (3-4 purple)." },
-        { min: 5, riskFloor: 0, label: "Ready" },
+        { max: 2, riskFloor: 0.95, label: "장비 부족 (영웅 0~2)." },
+        { min: 3, max: 4, riskFloor: 0.55, label: "준비 부족 (영웅 3~4)." },
+        { min: 5, riskFloor: 0, label: "준비 완료" },
       ],
     },
     deathRisk: 0.7,
@@ -413,8 +411,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   },
   host_guild_meeting: {
     id: "host_guild_meeting",
-    name: "Host Guild Meeting",
-    description: "Lead planning for a guild push. Strong social and influence gains.",
+    name: "길드 회의 주최",
+    description: "길드 공세를 위한 계획을 주도합니다. 강한 사회·영향력 보너스를 얻습니다.",
     energyCost: 9,
     durationHours: 2,
     progressionTier: "none",
@@ -438,8 +436,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   },
   black_market_trading: {
     id: "black_market_trading",
-    name: "Black Market Trading",
-    description: "High-risk trading opportunity with volatile outcomes.",
+    name: "암거래상 거래",
+    description: "변동성이 큰 결과가 따라오는 고위험 거래 기회입니다.",
     energyCost: 11,
     goldCost: 25,
     durationHours: 3,
@@ -471,8 +469,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   },
   buy_raid_supplies: {
     id: "buy_raid_supplies",
-    name: "Buy Raid Supplies",
-    description: "Purchase potions, food, and scrolls before difficult encounters.",
+    name: "레이드 보급 구매",
+    description: "어려운 조우에 앞서 포션, 음식, 두루마리를 구매합니다.",
     energyCost: 6,
     goldCost: 55,
     durationHours: 2,
@@ -494,8 +492,8 @@ export const ACTIVITIES: Record<ActivityId, ActivityDefinition> = {
   },
   commission_enchant: {
     id: "commission_enchant",
-    name: "Commission Enchant",
-    description: "Pay specialists to craft a premium item upgrade.",
+    name: "마법부여 의뢰",
+    description: "전문 장인에게 고가 업그레이드 제작을 의뢰합니다.",
     energyCost: 8,
     goldCost: 85,
     durationHours: 3,

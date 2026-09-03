@@ -9,7 +9,7 @@ export function EnergyBar({ current, max }: EnergyBarProps) {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-yellow-400 font-bold text-sm tracking-widest">⚡ ENERGY</span>
+      <span className="text-yellow-400 font-bold text-sm tracking-widest">⚡ 에너지</span>
       <div className="flex-1 h-4 bg-gray-800 rounded border border-gray-600 overflow-hidden">
         <div
           className={`h-full transition-all duration-300 ${color}`}

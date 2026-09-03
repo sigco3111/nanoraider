@@ -6,20 +6,29 @@ function formatEffects(choiceEffects: NonNullable<(typeof DAILY_EVENTS)[keyof ty
   if (choiceEffects.triangle !== undefined) {
     for (const [k, v] of Object.entries(choiceEffects.triangle)) {
       if (v !== 0) {
-        parts.push(`${v > 0 ? "+" : ""}${v} ${k}`);
+        const keyLabel: Record<string, string> = {
+          war: "전쟁",
+          wit: "지혜",
+          wealth: "부",
+        };
+        parts.push(`${v > 0 ? "+" : ""}${v} ${keyLabel[k] ?? k}`);
       }
     }
   }
   if (choiceEffects.renown !== undefined && choiceEffects.renown !== 0) {
-    parts.push(`renown ${choiceEffects.renown > 0 ? "+" : ""}${choiceEffects.renown}`);
+    parts.push(`명성 ${choiceEffects.renown > 0 ? "+" : ""}${choiceEffects.renown}`);
   }
   if (choiceEffects.daring !== undefined && choiceEffects.daring !== 0) {
-    parts.push(`daring ${choiceEffects.daring > 0 ? "+" : ""}${choiceEffects.daring}`);
+    parts.push(`대담함 ${choiceEffects.daring > 0 ? "+" : ""}${choiceEffects.daring}`);
   }
   if (choiceEffects.bossReadiness !== undefined) {
+    const bossLabel: Record<string, string> = {
+      molten_fury: "잿불격노",
+      eternal_throne: "영원의 왕좌",
+    };
     for (const [k, v] of Object.entries(choiceEffects.bossReadiness)) {
       if (v !== 0) {
-        parts.push(`${k} readiness ${v > 0 ? "+" : ""}${v}%`);
+        parts.push(`${bossLabel[k] ?? k} 준비도 ${v > 0 ? "+" : ""}${v}%`);
       }
     }
   }
@@ -38,7 +47,7 @@ export function DailyEventScreen() {
     <div className="min-h-screen p-4 flex items-center justify-center">
       <div className="w-full max-w-2xl bg-gray-900 border border-gray-700 rounded-xl p-6 space-y-4">
         <div>
-          <p className="text-xs text-yellow-400 font-bold uppercase tracking-widest">Random Event</p>
+          <p className="text-xs text-yellow-400 font-bold uppercase tracking-widest">무작위 이벤트</p>
           <h2 className="text-2xl font-bold text-white mt-1">{eventDef.title}</h2>
           <p className="text-gray-400 text-sm mt-2">{eventDef.description}</p>
         </div>
@@ -61,7 +70,7 @@ export function DailyEventScreen() {
                     </span>
                   ))}
                   {(choice.xpGain ?? 0) > 0 && (
-                    <span className="text-xs px-2 py-1 rounded bg-blue-900 text-blue-200">+{choice.xpGain} XP</span>
+                    <span className="text-xs px-2 py-1 rounded bg-blue-900 text-blue-200">+{choice.xpGain} 경험치</span>
                   )}
                   {(choice.goldGain ?? 0) > 0 && (
                     <span className="text-xs px-2 py-1 rounded bg-yellow-900 text-yellow-200">+{choice.goldGain}g</span>

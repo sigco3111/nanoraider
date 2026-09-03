@@ -10,13 +10,13 @@ export function HeroCreation() {
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-lg space-y-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-yellow-400">Blank Slate Hero</h2>
-          <p className="text-gray-500 text-sm mt-1">No class lock-in. Your early choices define your archetype.</p>
+          <h2 className="text-2xl font-bold text-yellow-400">백지 영웅</h2>
+          <p className="text-gray-500 text-sm mt-1">고정된 직업은 없습니다. 초기 선택이 당신의 원형을 결정합니다.</p>
         </div>
 
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 space-y-5">
           <div className="space-y-1.5">
-            <label className="text-gray-500 text-xs uppercase tracking-widest block">Hero Name</label>
+            <label className="text-gray-500 text-xs uppercase tracking-widest block">영웅 이름</label>
             <div className="flex gap-2">
               <input
                 className="flex-1 bg-gray-800 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-yellow-500"
@@ -28,7 +28,7 @@ export function HeroCreation() {
               <button
                 className="text-gray-500 hover:text-gray-300 text-xs px-3 py-2 border border-gray-700 rounded transition-colors"
                 onClick={() => { setName(randomHeroName()); }}
-                title="Randomise name"
+                title="이름 무작위 생성"
               >
                 ↻
               </button>
@@ -36,7 +36,7 @@ export function HeroCreation() {
           </div>
 
           <div className="text-gray-500 text-xs border-t border-gray-800 pt-3">
-            Days 1–3 include extra random events. Their choices shape your War/Wit/Wealth triangle and renown.
+            1~3일 차에는 추가 무작위 이벤트가 발생합니다. 그 선택이 전쟁·지혜·부 트라이앵글과 명성을 결정합니다.
           </div>
 
           <button
@@ -44,7 +44,7 @@ export function HeroCreation() {
             disabled={name.trim().length === 0}
             onClick={() => { createHero(name.trim()); }}
           >
-            Begin Adventure
+            모험 시작
           </button>
         </div>
 
@@ -52,7 +52,7 @@ export function HeroCreation() {
           className="w-full text-gray-600 hover:text-gray-400 text-sm transition-colors"
           onClick={() => { goTo("main_menu"); }}
         >
-          ← Back to menu
+          ← 메뉴로 돌아가기
         </button>
       </div>
     </div>

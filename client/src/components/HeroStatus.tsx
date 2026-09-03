@@ -22,11 +22,11 @@ const RARITY_COLOR: Record<string, string> = {
 };
 
 const SLOT_LABELS: Record<GearSlot, string> = {
-  head: "Head",
-  chest: "Chest",
-  legs: "Legs",
-  mainhand: "Main Hand",
-  offhand: "Off-hand",
+  head: "머리",
+  chest: "가슴",
+  legs: "다리",
+  mainhand: "주무기",
+  offhand: "보조",
 };
 
 export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroStatusProps) {
@@ -77,17 +77,17 @@ export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroS
   const agePhase = (() => {
     switch (getAgePhase(hero.inGameDay)) {
       case "healthy":
-        return { label: "Healthy", color: "text-green-400" };
+        return { label: "건강", color: "text-green-400" };
       case "aging":
-        return { label: "Aging", color: "text-orange-400" };
+        return { label: "노화", color: "text-orange-400" };
       case "elderly":
-        return { label: "Elderly", color: "text-red-400" };
+        return { label: "노령", color: "text-red-400" };
     }
   })();
 
   return (
     <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 space-y-4">
-      {/* Header */}
+      {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>
           {canChangeCharacter && onRename !== undefined ? (
@@ -127,16 +127,16 @@ export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroS
         </div>
         <div className="text-right">
           <div className={`font-bold text-sm ${agePhase.color}`}>{agePhase.label}</div>
-          <div className="text-gray-400 text-xs">Day {hero.inGameDay} / 12</div>
+          <div className="text-gray-400 text-xs">{hero.inGameDay} / 12일 차</div>
         </div>
       </div>
 
-      {/* Energy */}
+      {/* 에너지 */}
       <EnergyBar current={energyRemaining} max={maxEnergy} />
 
-      {/* XP Bar */}
+      {/* 경험치 바 */}
       <div className="flex items-center gap-3">
-        <span className="text-blue-400 font-bold text-sm tracking-widest">✦ XP</span>
+        <span className="text-blue-400 font-bold text-sm tracking-widest">✦ 경험치</span>
         <div className="flex-1 h-2 bg-gray-800 rounded border border-gray-700 overflow-hidden">
           <div
             className="h-full bg-blue-500 transition-all"
@@ -146,9 +146,9 @@ export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroS
         <span className="text-gray-400 text-xs w-24 text-right">{hero.xp} / {hero.xpToNextLevel}</span>
       </div>
 
-      {/* Renown Bar */}
+      {/* 명성 바 */}
       <div className="flex items-center gap-3">
-        <span className="text-green-400 font-bold text-sm tracking-widest">✦ Renown</span>
+        <span className="text-green-400 font-bold text-sm tracking-widest">✦ 명성</span>
         <div className="flex-1 h-2 bg-gray-800 rounded border border-gray-700 overflow-hidden">
           <div
             className="h-full bg-green-500 transition-all"
@@ -158,32 +158,32 @@ export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroS
         <span className="text-gray-400 text-xs w-24 text-right">{hero.renown}</span>
       </div>
 
-      {/* Build Triangle (War / Wealth / Wit — sums to 100%) */}
+      {/* 트라이앵글 (전쟁 / 부 / 지혜 — 합계 100%) */}
       <div className="space-y-6">
         <div className="space-y-1">
           <div className="h-6 bg-gray-800 rounded border border-gray-700 overflow-hidden flex">
             <div
               className="h-full bg-red-500 transition-all shrink-0 flex items-center justify-center"
               style={{ width: `${hero.triangle.war}%`, }}
-              title={`War ${hero.triangle.war}%`}
+              title={`전쟁 ${hero.triangle.war}%`}
             >
-              War {hero.triangle.war}%
+              전쟁 {hero.triangle.war}%
             </div>
             <div
               className="h-full bg-blue-500 transition-all shrink-0 flex items-center justify-center"
               style={{ width: `${hero.triangle.wit}%` }}
-              title={`Wit ${hero.triangle.wit}%`}
+              title={`지혜 ${hero.triangle.wit}%`}
             >
-              Wit {hero.triangle.wit}%
+              지혜 {hero.triangle.wit}%
             </div>
             <div
               className="h-full bg-yellow-400 text-black transition-all shrink-0 flex items-center justify-center"
               style={{ width: `${hero.triangle.wealth}%` }}
-              title={`Wealth ${hero.triangle.wealth}%`}
+              title={`부 ${hero.triangle.wealth}%`}
             >
-              Wealth {hero.triangle.wealth}%
+              부 {hero.triangle.wealth}%
             </div>
-            
+
           </div>
         </div>
         <div className="text-gray-500 text-xs flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -192,7 +192,7 @@ export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroS
           <span className="text-gray-600">|</span>
           <span>
             {Object.keys(hero.materials).length === 0
-              ? "No crafting materials"
+              ? "제작 재료 없음"
               : (Object.keys(hero.materials) as MaterialId[])
                 .map((id) => {
                   const amt = hero.materials[id];
@@ -203,10 +203,10 @@ export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroS
         </div>
       </div>
 
-      {/* Gear slots */}
+      {/* 장비 슬롯 */}
       <div className="flex items-center justify-between">
-        <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">Equipped Items</span>
-        <span className="text-purple-300 font-bold text-sm">Gear Score {gearPower}</span>
+        <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">장착 장비</span>
+        <span className="text-purple-300 font-bold text-sm">장비 점수 {gearPower}</span>
       </div>
       <div className="grid grid-cols-5 gap-1">
         {(Object.entries(SLOT_LABELS) as [GearSlot, string][]).map(([slot, label]) => {
@@ -219,7 +219,7 @@ export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroS
               }`}
               key={slot}
               onClick={() => toggleSelectedSlot(slot)}
-              title={item !== null ? `${item.name} (${RARITY_LABELS[item.rarity]}) · ${formatGearStats(item.power) || "—"}` : "Empty"}
+              title={item !== null ? `${item.name} (${RARITY_LABELS[item.rarity]}) · ${formatGearStats(item.power) || "—"}` : "비어 있음"}
               type="button"
             >
               <div className="text-gray-500 text-xs">{label}</div>
@@ -247,7 +247,7 @@ export function HeroStatus({ hero, maxEnergy, energyUsedToday, onRename }: HeroS
             </div>
           </div>
         ) : (
-          <div className="mt-1 text-gray-500 text-xs">No item equipped.</div>
+          <div className="mt-1 text-gray-500 text-xs">장착된 장비가 없습니다.</div>
         )}
       </div> : null}
     </div>

@@ -22,6 +22,32 @@ import { generateGear, getExpectedFreshHeroGearPower, getGearPower, randomGearSl
 import { bossForRaidActivity, isLethalActivity } from "./activityMeta";
 import { assertExhausted } from "../utils/assert";
 import { getAgePhase } from "./character";
+import {
+  BLOCK_REASON_BOSS_READINESS,
+  BLOCK_REASON_DAILY_LIMIT,
+  BLOCK_REASON_DARING,
+  BLOCK_REASON_DARING_MAX,
+  BLOCK_REASON_ENERGY,
+  BLOCK_REASON_GOLD,
+  BLOCK_REASON_GEAR_BLUE,
+  BLOCK_REASON_GEAR_GREEN,
+  BLOCK_REASON_GEAR_PURPLE,
+  BLOCK_REASON_LEVEL,
+  BLOCK_REASON_RAID_DEATH,
+  BLOCK_REASON_RENOWN,
+  BLOCK_REASON_TRIANGLE_MAX,
+  BLOCK_REASON_TRIANGLE_MIN,
+  READINESS_LABEL_NOT_FULL_GREEN,
+  READINESS_METRIC_KR,
+  RISK_HINT_ELDERLY,
+  RISK_HINT_GOOD_GEAR,
+  RISK_HINT_HIGH_STATS,
+  RISK_HINT_LEGACY_BONUS,
+  RISK_HINT_NO_LETHAL,
+  RISK_HINT_OVER_LEVELED,
+  RISK_HINT_UNDER_LEVELED,
+  RISK_HINT_WELL_PREPARED,
+} from "../data/labels";
 
 function roll(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -188,7 +214,7 @@ function resolveReadinessFloor(hero: Hero, def: ActivityDefinition): { floor: nu
     if (greenPlusSlots < 5) {
       return {
         floor: 0.99,
-        label: `Not even full green. Capstone is almost guaranteed death (${greenPlusSlots}/5 greenPlusSlots)`,
+        label: `${READINESS_LABEL_NOT_FULL_GREEN} (${greenPlusSlots}/5 ${READINESS_METRIC_KR.greenPlusSlots})`,
       };
     }
   }
@@ -199,15 +225,9 @@ function resolveReadinessFloor(hero: Hero, def: ActivityDefinition): { floor: nu
     return { floor: 0, label: null };
   }
 
-  const metricLabelById: Record<GearReadinessMetric, string> = {
-    greenPlusSlots: "green+ slots",
-    bluePlusSlots: "blue+ slots",
-    purpleSlots: "purple slots",
-  };
-
   return {
     floor: matchedBand.riskFloor,
-    label: `${matchedBand.label} (${value}/5 ${metricLabelById[rule.metric]})`,
+    label: `${matchedBand.label} (${value}/5 ${READINESS_METRIC_KR[rule.metric]})`,
   };
 }
 
@@ -266,37 +286,40 @@ function mergeRiskProfile(def: ActivityDefinition): Required<NonNullable<Activit
   };
 }
 
-const WEAK = "✗";  // penalty: you're vulnerable
-const STRONG = "✓"; // mitigation: you're strong
+const WEAK = "✗";  // 패널티: 취약
+const STRONG = "✓"; // 경감: 강점
 
 function buildRiskHintRow(label: string, kind: "penalty" | "mitigation"): string {
   const marker = kind === "penalty" ? WEAK : STRONG;
   return `${marker} ${label}`;
 }
 
+// 표시에 사용할 한국어 라벨 매핑(영문 키는 내부 식별자)
+const READINESS_PENALTY_LABEL = "장비 부족으로 사망 확률 보장됨";
+
 export function buildRiskHints(def: ActivityDefinition, breakdown: ActivityRiskBreakdown): string[] {
+  const readinessPenaltyLabel = breakdown.readinessLabel ?? READINESS_PENALTY_LABEL;
   const rows: Array<{ label: string; amount: number; kind: "penalty" | "mitigation" }> = [
-    { label: breakdown.readinessLabel ?? "stats too low", amount: breakdown.readinessFloor, kind: "penalty" },
-    { label: "under-levelled", amount: breakdown.levelPenalty, kind: "penalty" },
-    { label: "over-levelled", amount: breakdown.levelMitigation, kind: "mitigation" },
-    { label: "good gear", amount: breakdown.gearMitigation, kind: "mitigation" },
-    { label: "well prepared", amount: breakdown.prepMitigation + breakdown.knowledgeMitigation, kind: "mitigation" },
-    { label: "legacy bonus", amount: breakdown.metaMitigation, kind: "mitigation" },
-    { label: "elderly", amount: breakdown.agePenalty, kind: "penalty" },
+    { label: readinessPenaltyLabel, amount: breakdown.readinessFloor, kind: "penalty" },
+    { label: RISK_HINT_UNDER_LEVELED, amount: breakdown.levelPenalty, kind: "penalty" },
+    { label: RISK_HINT_OVER_LEVELED, amount: breakdown.levelMitigation, kind: "mitigation" },
+    { label: RISK_HINT_GOOD_GEAR, amount: breakdown.gearMitigation, kind: "mitigation" },
+    { label: RISK_HINT_WELL_PREPARED, amount: breakdown.prepMitigation + breakdown.knowledgeMitigation, kind: "mitigation" },
+    { label: RISK_HINT_LEGACY_BONUS, amount: breakdown.metaMitigation, kind: "mitigation" },
+    { label: RISK_HINT_ELDERLY, amount: breakdown.agePenalty, kind: "penalty" },
   ];
 
   if (def.deathRisk <= 0) {
-    return ["No lethal risk"];
+    return [RISK_HINT_NO_LETHAL];
   }
 
   const filteredRows = rows.filter((row) => row.amount > 0.005);
 
-  // If we have a readiness floor penalty, we should hide "high stats" mitigation
-  // because the floor is overriding the mitigation, making it confusing to show both.
-  const hasReadinessPenalty = filteredRows.some(r => r.label === (breakdown.readinessLabel ?? "stats too low") && r.kind === "penalty");
-  
-  const finalRows = hasReadinessPenalty 
-    ? filteredRows.filter(r => r.label !== "high stats")
+  // 준비도 패널티가 있으면 "스탯 충분" 경감은 숨김(혼동 방지)
+  const hasReadinessPenalty = filteredRows.some((r) => r.label === readinessPenaltyLabel && r.kind === "penalty");
+
+  const finalRows = hasReadinessPenalty
+    ? filteredRows.filter((r) => r.label !== RISK_HINT_HIGH_STATS)
     : filteredRows;
 
   return finalRows
@@ -568,17 +591,17 @@ export function getActivityUnlockGaps(hero: Hero, def: ActivityDefinition, meta:
 
   const gaps: string[] = [];
   if (cond.requiresRaidDeath === true && meta.raidDeaths < 1) {
-    gaps.push("Die to a raid once");
+    gaps.push(BLOCK_REASON_RAID_DEATH);
   }
   if (cond.minLevel !== undefined && hero.level < cond.minLevel) {
-    gaps.push(`Level ${cond.minLevel}`);
+    gaps.push(BLOCK_REASON_LEVEL(cond.minLevel));
   }
   if (cond.minTriangle !== undefined) {
     for (const [key, value] of Object.entries(cond.minTriangle)) {
       const need = value;
       const current = hero.triangle[key as TriangleKey];
       if (current < need) {
-        gaps.push(`${key} ${current}/${need}`);
+        gaps.push(BLOCK_REASON_TRIANGLE_MIN(key, current, need));
       }
     }
   }
@@ -587,39 +610,39 @@ export function getActivityUnlockGaps(hero: Hero, def: ActivityDefinition, meta:
       const need = value;
       const current = hero.triangle[key as TriangleKey];
       if (current > need) {
-        gaps.push(`${key} ${current} > ${need}`);
+        gaps.push(BLOCK_REASON_TRIANGLE_MAX(key, current, need));
       }
     }
   }
   if (cond.minRenown !== undefined && hero.renown < cond.minRenown) {
-    gaps.push(`renown ${hero.renown}/${cond.minRenown}`);
+    gaps.push(BLOCK_REASON_RENOWN(hero.renown, cond.minRenown));
   }
   if (cond.minDaring !== undefined && hero.daring < cond.minDaring) {
-    gaps.push(`daring ${hero.daring}/${cond.minDaring}`);
+    gaps.push(BLOCK_REASON_DARING(hero.daring, cond.minDaring));
   }
   if (cond.maxDaring !== undefined && hero.daring > cond.maxDaring) {
-    gaps.push(`daring ${hero.daring}/${cond.maxDaring} max`);
+    gaps.push(BLOCK_REASON_DARING_MAX(hero.daring, cond.maxDaring));
   }
   if (cond.minBossReadiness !== undefined) {
     for (const [key, value] of Object.entries(cond.minBossReadiness)) {
       const need = value;
       const current = getBossReadiness(hero, key as BossId);
       if (current < need) {
-        gaps.push(`${key} readiness ${Math.round(current)}/${need}`);
+        gaps.push(BLOCK_REASON_BOSS_READINESS(key, Math.round(current), need));
       }
     }
   }
   const greenPlus = countSlotsAtOrAboveRarity(hero, "green");
   if (cond.minGreenPlusSlots !== undefined && greenPlus < cond.minGreenPlusSlots) {
-    gaps.push(`green+ slots ${greenPlus}/${cond.minGreenPlusSlots}`);
+    gaps.push(BLOCK_REASON_GEAR_GREEN(greenPlus, cond.minGreenPlusSlots));
   }
   const bluePlus = countSlotsAtOrAboveRarity(hero, "blue");
   if (cond.minBluePlusSlots !== undefined && bluePlus < cond.minBluePlusSlots) {
-    gaps.push(`blue+ slots ${bluePlus}/${cond.minBluePlusSlots}`);
+    gaps.push(BLOCK_REASON_GEAR_BLUE(bluePlus, cond.minBluePlusSlots));
   }
   const purple = countSlotsAtOrAboveRarity(hero, "purple");
   if (cond.minPurpleSlots !== undefined && purple < cond.minPurpleSlots) {
-    gaps.push(`purple slots ${purple}/${cond.minPurpleSlots}`);
+    gaps.push(BLOCK_REASON_GEAR_PURPLE(purple, cond.minPurpleSlots));
   }
   return gaps;
 }
@@ -639,19 +662,19 @@ export function buildActivityBlockedReasons(
   const reasons: string[] = [];
 
   if (energyRemaining < def.energyCost) {
-    reasons.push(`energy ${energyRemaining}/${def.energyCost}`);
+    reasons.push(BLOCK_REASON_ENERGY(energyRemaining, def.energyCost));
   }
 
   const goldCost = def.goldCost ?? 0;
   if (goldRemaining < goldCost) {
-    reasons.push(`gold ${goldRemaining}/${goldCost}`);
+    reasons.push(BLOCK_REASON_GOLD(goldRemaining, goldCost));
   }
 
   reasons.push(...getActivityUnlockGaps(hero, def, meta));
 
   if (def.maxDailyUses !== undefined && usesToday >= def.maxDailyUses) {
     const safeUses = Math.min(usesToday, def.maxDailyUses);
-    reasons.push(`daily limit ${safeUses}/${def.maxDailyUses}`);
+    reasons.push(BLOCK_REASON_DAILY_LIMIT(safeUses, def.maxDailyUses));
   }
 
   return reasons;

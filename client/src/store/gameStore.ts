@@ -32,6 +32,14 @@ import { randomHeroName } from "../data/nurture";
 import { applyReadinessGain, normalizeBossReadinessBank } from "../game/bossReadiness";
 import { generateGear, sumGearStats } from "../game/gearGenerator";
 import { bossForRaidActivity, isLethalActivity } from "../game/activityMeta";
+import {
+  RARITY_KR,
+  SLOT_SHORT_KR,
+  TX_BUY_OFFER,
+  TX_CRAFT,
+  TX_REROLL_VENDOR,
+  VENDOR_LABEL,
+} from "../data/labels";
 
 const BASE_ENERGY = 50;
 const AP_PER_RUN = 25;
@@ -576,7 +584,7 @@ export const useGameStore = create<GameState>()(
           vendorRerollsUsedToday: vendorRerollsUsedToday + 1,
           todayTransactions: [
             ...get().todayTransactions,
-            { kind: "vendor_purchase", label: `Rerolled ${vendorId} offers`, goldSpent: 10 },
+            { kind: "vendor_purchase", label: TX_REROLL_VENDOR(VENDOR_LABEL[vendorId]), goldSpent: 10 },
           ],
         });
         return true;
@@ -637,7 +645,7 @@ export const useGameStore = create<GameState>()(
             ...todayTransactions,
             {
               kind: "vendor_purchase",
-              label: `Bought ${offer.name}`,
+              label: TX_BUY_OFFER(offer.name),
               energySpent: 1,
               goldSpent: goldCost,
               materialsDelta: {
@@ -696,7 +704,7 @@ export const useGameStore = create<GameState>()(
             ...todayTransactions,
             {
               kind: "craft",
-              label: `Crafted ${recipe.rarity} ${recipe.slot}`,
+              label: TX_CRAFT(RARITY_KR[recipe.rarity], SLOT_SHORT_KR[recipe.slot]),
               energySpent: recipe.energyCost,
               goldSpent: goldCost,
               materialsDelta: costDelta,

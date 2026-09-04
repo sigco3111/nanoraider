@@ -413,7 +413,7 @@ export function PlanningScreen() {
                   type="button"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-gray-100">{SLOT_LABELS[slot] ?? slot}</span>
+                    <span className="text-sm font-bold text-gray-100">{(SLOT_LABELS as Record<string, string>)[slot] ?? slot}</span>
                     {slotKnown ? (
                       <span className={`text-[10px] font-bold ${slotCanCraft ? "text-green-400" : "text-gray-400"}`}>{slotCanCraft ? "준비됨" : "불가"}</span>
                     ) : (
@@ -437,7 +437,7 @@ export function PlanningScreen() {
 
           <div className="bg-gray-800 border border-gray-700 rounded p-3 space-y-2">
             <div className="text-sm font-bold text-gray-100">
-              {SLOT_LABELS[selectedForgeSlot] ?? selectedForgeSlot} · {FORGE_TIER_LABELS[forgeTier]}
+              {(SLOT_LABELS as Record<string, string>)[selectedForgeSlot] ?? selectedForgeSlot} · {FORGE_TIER_LABELS[forgeTier]}
             </div>
             <div className="text-xs text-gray-400">레시피: {selectedRecipe}</div>
 

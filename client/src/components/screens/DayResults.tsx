@@ -2,6 +2,7 @@ import { useGameStore } from "../../store/gameStore";
 import { ACTIVITIES } from "../../data/activities";
 import { MATERIAL_LABELS } from "../../data/crafting";
 import { formatGearStats } from "../../game/gearGenerator";
+import { EVENT_LABEL_KR } from "../../data/labels";
 
 const RARITY_COLOR: Record<string, string> = {
   gray: "text-white",
@@ -102,7 +103,7 @@ export function DayResults() {
         })}
         {results.eventsResolved.map((event, i) => (
           <div className="flex items-center justify-between text-sm border-t border-gray-800 pt-2" key={`${event.eventId}-${i}`}>
-            <span className="text-indigo-300">이벤트: {event.eventId}</span>
+            <span className="text-indigo-300">이벤트: {(EVENT_LABEL_KR as Record<string, string>)[event.eventId] ?? event.eventId}</span>
             <div className="flex gap-3 text-xs">
               {event.xpGained > 0 && <span className="text-blue-400">+{event.xpGained} 경험치</span>}
               {event.goldGained > 0 && <span className="text-yellow-400">+{event.goldGained}g</span>}

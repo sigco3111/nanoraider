@@ -10,6 +10,25 @@ import type {
   TriangleKey,
 } from "../data/types";
 import { getBossReadiness } from "./bossKnowledge";
+import {
+  BOSS_LABEL,
+  NEAR_MISS_DEFEAT_RAID,
+  NEAR_MISS_LESS_DARING,
+  NEAR_MISS_LESS_TRIANGLE,
+  NEAR_MISS_MORE_DARING,
+  NEAR_MISS_MORE_GOLD,
+  NEAR_MISS_MORE_READINESS,
+  NEAR_MISS_MORE_RENOWN,
+  NEAR_MISS_MORE_TRIANGLE,
+  WHY_UNLOCKED_BATTLEMASTER,
+  WHY_UNLOCKED_FORGEMASTER,
+  WHY_UNLOCKED_HERALD,
+  WHY_UNLOCKED_LOREKEEPER,
+  WHY_UNLOCKED_QUARTERMASTER,
+  WHY_UNLOCKED_SIEGEBREAKER,
+  WHY_UNLOCKED_TRAILBLAZER,
+  WHY_UNLOCKED_WARCHIEF,
+} from "../data/labels";
 
 export interface TownspersonCheckResult {
   unlocked: TownspersonRoleId | null;
@@ -124,25 +143,25 @@ function evaluateChecks(
   return checks;
 }
 
-function buildWhyString(id: TownspersonRoleId, hero: Hero, defeatedRaids: BossId[]): string {
+function buildWhyString(id: TownspersonRoleId, hero: Hero, _defeatedRaids: BossId[]): string {
   const t = hero.triangle;
   switch (id) {
     case "battlemaster":
-      return `You became a war-focused hero (War ${t.war}%) with high daring (${hero.daring}).`;
+      return WHY_UNLOCKED_BATTLEMASTER(t.war, hero.daring);
     case "lorekeeper":
-      return `You invested in wit and boss preparation (Wit ${t.wit}%, MF readiness ${Math.round(getBossReadiness(hero, "molten_fury"))}%).`;
+      return WHY_UNLOCKED_LOREKEEPER(t.wit, Math.round(getBossReadiness(hero, "molten_fury")));
     case "quartermaster":
-      return `You prioritized economic growth (Wealth ${t.wealth}%) and held ${hero.gold}g at death.`;
+      return WHY_UNLOCKED_QUARTERMASTER(t.wealth, hero.gold);
     case "trailblazer":
-      return `You lived dangerously — high daring (${hero.daring}) with war focus (War ${t.war}%).`;
+      return WHY_UNLOCKED_TRAILBLAZER(hero.daring, t.war);
     case "herald":
-      return `You built strong social standing (Renown ${hero.renown}) with wealth backing (Wealth ${t.wealth}%).`;
+      return WHY_UNLOCKED_HERALD(hero.renown, t.wealth);
     case "forgemaster":
-      return `You defeated Molten Fury${defeatedRaids.includes("molten_fury") ? "" : ""} with deep readiness and balanced wit/war (Wit ${t.wit}%, War ${t.war}%).`;
+      return WHY_UNLOCKED_FORGEMASTER(t.wit, t.war);
     case "warchief":
-      return `You conquered Molten Fury with overwhelming war (${t.war}%), daring (${hero.daring}), and renown (${hero.renown}).`;
+      return WHY_UNLOCKED_WARCHIEF(t.war, hero.daring, hero.renown);
     case "siegebreaker":
-      return `You conquered the Eternal Throne across all dimensions — War ${t.war}%, Wit ${t.wit}%, Wealth ${t.wealth}%, Daring ${hero.daring}.`;
+      return WHY_UNLOCKED_SIEGEBREAKER(t.war, t.wit, t.wealth, hero.daring);
   }
 }
 
@@ -161,7 +180,7 @@ function buildAlmostReason(
     for (const [key, value] of Object.entries(cond.minTriangle)) {
       const current = hero.triangle[key as TriangleKey];
       if (current < value) {
-        parts.push(`${value - current} more ${key} needed`);
+        parts.push(NEAR_MISS_MORE_TRIANGLE(key, value - current));
       }
     }
   }
@@ -169,34 +188,36 @@ function buildAlmostReason(
     for (const [key, value] of Object.entries(cond.maxTriangle)) {
       const current = hero.triangle[key as TriangleKey];
       if (current > value) {
-        parts.push(`${current - value} less ${key} needed`);
+        parts.push(NEAR_MISS_LESS_TRIANGLE(key, current - value));
       }
     }
   }
   if (cond.minRenown !== undefined && hero.renown < cond.minRenown) {
-    parts.push(`${cond.minRenown - hero.renown} more renown needed`);
+    parts.push(NEAR_MISS_MORE_RENOWN(cond.minRenown - hero.renown));
   }
   if (cond.minDaring !== undefined && hero.daring < cond.minDaring) {
-    parts.push(`${cond.minDaring - hero.daring} more daring needed`);
+    parts.push(NEAR_MISS_MORE_DARING(cond.minDaring - hero.daring));
   }
   if (cond.maxDaring !== undefined && hero.daring > cond.maxDaring) {
-    parts.push(`${hero.daring - cond.maxDaring} less daring needed`);
+    parts.push(NEAR_MISS_LESS_DARING(hero.daring - cond.maxDaring));
   }
   if (checks.gold === false && cond.minGoldAtDeath !== undefined) {
-    parts.push(`${cond.minGoldAtDeath - hero.gold}g more gold needed`);
+    parts.push(NEAR_MISS_MORE_GOLD(cond.minGoldAtDeath - hero.gold));
   }
   if (cond.minBossReadiness !== undefined) {
     for (const [key, value] of Object.entries(cond.minBossReadiness)) {
       const current = getBossReadiness(hero, key as BossId);
       if (current < value) {
-        parts.push(`${value - Math.round(current)}% more ${key} readiness needed`);
+        const bossKr = (BOSS_LABEL as Record<string, string>)[key] ?? key;
+        parts.push(NEAR_MISS_MORE_READINESS(bossKr, value - Math.round(current)));
       }
     }
   }
   if (cond.mustDefeatRaids !== undefined) {
     for (const raidId of cond.mustDefeatRaids) {
       if (!defeatedRaids.includes(raidId)) {
-        parts.push(`must defeat ${raidId.replace(/_/g, " ")}`);
+        const bossKr = (BOSS_LABEL as Record<string, string>)[raidId] ?? raidId;
+        parts.push(NEAR_MISS_DEFEAT_RAID(bossKr));
       }
     }
   }
@@ -205,7 +226,7 @@ function buildAlmostReason(
     return parts.join(", ") + ".";
   }
 
-  // Fallback using the role hint
+  // 폴백: 역할 hint 사용
   return TOWNSPEOPLE[id].hint;
 }
 
